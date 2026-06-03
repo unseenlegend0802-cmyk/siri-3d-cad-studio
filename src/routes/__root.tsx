@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Siri dragons" },
+      { name: "description", content: "Dragonforge Studio is a premium fantasy portfolio website for showcasing and selling 3D printable dragon STL models and fantasy creatures." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Siri dragons" },
+      { property: "og:description", content: "Dragonforge Studio is a premium fantasy portfolio website for showcasing and selling 3D printable dragon STL models and fantasy creatures." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Siri dragons" },
+      { name: "twitter:description", content: "Dragonforge Studio is a premium fantasy portfolio website for showcasing and selling 3D printable dragon STL models and fantasy creatures." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8ba90874-680a-4194-99b2-4ade23a7ac82/id-preview-28a6e193--8a7d50aa-3366-498e-95bd-663887c943d2.lovable.app-1780503362041.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8ba90874-680a-4194-99b2-4ade23a7ac82/id-preview-28a6e193--8a7d50aa-3366-498e-95bd-663887c943d2.lovable.app-1780503362041.png" },
     ],
     links: [
       {
