@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiriHeader } from "@/components/SiriHeader";
 import { Embers } from "@/components/Embers";
 import { Hero } from "@/components/sections/Hero";
+import { LatestDragons } from "@/components/sections/LatestDragons";
 import { About } from "@/components/sections/About";
 import { Stats } from "@/components/sections/Stats";
 import { Gallery } from "@/components/sections/Gallery";
@@ -65,6 +66,7 @@ function Index() {
       <SiriHeader />
       <main className="relative z-10">
         <Hero />
+        <LatestDragons />
         <About />
         <Stats />
         <Gallery />

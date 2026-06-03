@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { Flame, Menu, X } from "lucide-react";
 
 const links = [
-  { href: "#about", label: "About" },
-  { href: "#stats", label: "Forge" },
-  { href: "#gallery", label: "Dragons" },
-  { href: "#stores", label: "Stores" },
-  { href: "#commissions", label: "Commissions" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#latest", label: "Latest" },
+  { href: "/#about", label: "About" },
+  { href: "/#stats", label: "Forge" },
+  { href: "/dragons", label: "All Dragons" },
+  { href: "/#stores", label: "Stores" },
+  { href: "/#commissions", label: "Commissions" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export function SiriHeader() {
