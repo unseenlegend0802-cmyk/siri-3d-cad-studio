@@ -1,9 +1,9 @@
 import { Flame, Hammer, Scroll } from "lucide-react";
 
 const pillars = [
-  { icon: Flame, title: "Born of Fire", text: "Every dragon is sculpted with cinematic anatomy, menacing silhouettes and print-ready geometry." },
+  { icon: Flame, title: "Multi-Discipline Craft", text: "From cinematic dragons to precise CAD parts, vehicles and architecture — one studio, many worlds." },
   { icon: Hammer, title: "Forged for Print", text: "Models are optimized for FDM and resin, with supports, cuts and hollows for clean prints." },
-  { icon: Scroll, title: "Legendary Detail", text: "Hand-sculpted scales, lore-driven designs and editorial presentation across every release." },
+  { icon: Scroll, title: "Production Detail", text: "Hand-crafted geometry, engineering accuracy and editorial presentation across every release." },
 ];
 
 export function About() {
@@ -12,18 +12,19 @@ export function About() {
       <div className="mx-auto max-w-7xl">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <div>
-            <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4">— About the Forge</p>
+            <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4">— About the Studio</p>
             <h2 className="font-display text-4xl md:text-5xl mb-6 leading-tight">
-              A studio dedicated to the art of <span className="text-primary">dragons</span>.
+              A 3D design studio for <span className="text-primary">dragons, machines</span> and everything between.
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed mb-4">
-              Siri Dragons is an independent 3D art studio crafting high-detail dragons, wyverns
-              and fantasy creatures. Each piece begins as a hand-sculpted concept and is refined
-              into a premium STL model ready for collectors and creators.
+              Siri3DCAD Studio is an independent 3D design and digital creation studio.
+              We craft high-detail dragons and fantasy creatures, alongside engineering CAD,
+              vehicles, architecture, miniatures and game-ready assets — each release built
+              with the same obsessive care.
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              From kingdom-shaking ancients to nimble drakes, every release is built to feel
-              alive — anatomy, attitude, and the heat of myth pressed into every scale.
+              Dragons remain our signature specialty. Around them we forge a broader portfolio
+              of premium 3D models for collectors, makers, tabletop heroes and studios.
             </p>
           </div>
           <div className="grid gap-4">
