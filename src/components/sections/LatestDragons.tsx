@@ -117,11 +117,12 @@ export function LatestDragons() {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
           <div>
             <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3">— Live from Sketchfab</p>
-            <h2 className="font-display text-4xl md:text-5xl">Latest Dragons</h2>
+            <h2 className="font-display text-4xl md:text-5xl">Latest Models</h2>
           </div>
           <p className="text-muted-foreground max-w-md">
-            Freshly forged sculptures, synced automatically from the Siri Dragons
-            Sketchfab archive. New uploads appear here without a website update.
+            Freshly published 3D work — dragons, vehicles, CAD and more — synced
+            automatically from the Siri3DCAD Sketchfab archive. New uploads appear
+            here without a website update.
           </p>
         </div>
 
