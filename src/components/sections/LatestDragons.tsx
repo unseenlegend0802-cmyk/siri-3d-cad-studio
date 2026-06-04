@@ -137,7 +137,7 @@ export function LatestDragons() {
             <Flame className="h-8 w-8 text-primary mx-auto mb-4" />
             <h3 className="font-display text-2xl mb-2">The forge is warming up</h3>
             <p className="text-muted-foreground max-w-md mx-auto">
-              New dragons will appear here the moment they are published on
+              New models will appear here the moment they are published on
               Sketchfab. Visit the profile to follow along.
             </p>
             <a
@@ -159,10 +159,10 @@ export function LatestDragons() {
             </div>
             <div className="mt-12 flex justify-center">
               <Link
-                to="/dragons"
+                to="/models"
                 className="group inline-flex items-center gap-2 px-7 py-4 rounded-md bg-gradient-ember text-primary-foreground font-medium shadow-ember hover:scale-[1.02] transition-transform"
               >
-                View All Dragons
+                View All Models
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
