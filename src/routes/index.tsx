@@ -11,16 +11,16 @@ import { Commissions } from "@/components/sections/Commissions";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 
-const title = "Siri Dragons — Premium Dragon STL Models, Wyverns & Fantasy Creatures";
+const title = "Siri3DCAD Studio — 3D Models, Dragons, Vehicles, CAD & STL Files";
 const description =
-  "Siri Dragons forges premium dragon STL files, wyverns and fantasy creatures for 3D printing, tabletop RPGs and game studios. Explore the bestiary and commission custom sculptures.";
+  "Siri3DCAD Studio creates premium 3D models — dragons, vehicles, architecture, engineering CAD, miniatures and game assets. Browse the live catalog and commission custom 3D work.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title },
       { name: "description", content: description },
-      { name: "keywords", content: "dragon STL, fantasy dragon, wyvern model, 3D printing dragon, dragon sculpture, fantasy creature, dragon bust, RPG creature, printable STL, game assets" },
+      { name: "keywords", content: "3D models, STL files, CAD models, engineering models, dragons, vehicles, miniatures, 3D printing, digital assets, fantasy creatures, game assets" },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
@@ -44,7 +44,8 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
-          name: "Siri Dragons",
+          name: "Siri3DCAD Studio",
+          alternateName: "Siri Dragons",
           description,
           url: "/",
           sameAs: [
