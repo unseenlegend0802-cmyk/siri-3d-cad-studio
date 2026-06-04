@@ -117,11 +117,12 @@ export function LatestDragons() {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
           <div>
             <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3">— Live from Sketchfab</p>
-            <h2 className="font-display text-4xl md:text-5xl">Latest Dragons</h2>
+            <h2 className="font-display text-4xl md:text-5xl">Latest Models</h2>
           </div>
           <p className="text-muted-foreground max-w-md">
-            Freshly forged sculptures, synced automatically from the Siri Dragons
-            Sketchfab archive. New uploads appear here without a website update.
+            Freshly published 3D work — dragons, vehicles, CAD and more — synced
+            automatically from the Siri3DCAD Sketchfab archive. New uploads appear
+            here without a website update.
           </p>
         </div>
 
@@ -136,7 +137,7 @@ export function LatestDragons() {
             <Flame className="h-8 w-8 text-primary mx-auto mb-4" />
             <h3 className="font-display text-2xl mb-2">The forge is warming up</h3>
             <p className="text-muted-foreground max-w-md mx-auto">
-              New dragons will appear here the moment they are published on
+              New models will appear here the moment they are published on
               Sketchfab. Visit the profile to follow along.
             </p>
             <a
@@ -158,10 +159,10 @@ export function LatestDragons() {
             </div>
             <div className="mt-12 flex justify-center">
               <Link
-                to="/dragons"
+                to="/models"
                 className="group inline-flex items-center gap-2 px-7 py-4 rounded-md bg-gradient-ember text-primary-foreground font-medium shadow-ember hover:scale-[1.02] transition-transform"
               >
-                View All Dragons
+                View All Models
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>

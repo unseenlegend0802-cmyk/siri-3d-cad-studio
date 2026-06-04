@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { Flame, Menu, X } from "lucide-react";
+import { Box, Menu, X } from "lucide-react";
 
 const links = [
   { href: "/#latest", label: "Latest" },
-  { href: "/#about", label: "About" },
+  { href: "/#about", label: "Studio" },
   { href: "/#stats", label: "Forge" },
-  { href: "/dragons", label: "All Dragons" },
+  { href: "/models", label: "All Models" },
   { href: "/#stores", label: "Stores" },
   { href: "/#commissions", label: "Commissions" },
   { href: "/#contact", label: "Contact" },
@@ -33,9 +33,9 @@ export function SiriHeader() {
     >
       <div className="mx-auto max-w-7xl px-6 h-16 flex items-center justify-between">
         <a href="#top" className="flex items-center gap-2 group">
-          <Flame className="h-5 w-5 text-primary group-hover:text-ember transition-colors" />
+          <Box className="h-5 w-5 text-primary group-hover:text-ember transition-colors" />
           <span className="font-display text-lg tracking-widest">
-            SIRI <span className="text-primary">DRAGONS</span>
+            SIRI<span className="text-primary">3DCAD</span>
           </span>
         </a>
         <nav className="hidden md:flex items-center gap-8">

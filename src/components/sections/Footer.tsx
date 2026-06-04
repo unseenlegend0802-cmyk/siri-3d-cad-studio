@@ -1,4 +1,4 @@
-import { Flame } from "lucide-react";
+import { Box } from "lucide-react";
 
 const social = [
   { name: "Sketchfab", href: "https://sketchfab.com/unseenlegend0802" },
@@ -13,14 +13,14 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between gap-10 mb-10">
           <div className="max-w-sm">
             <div className="flex items-center gap-2 mb-4">
-              <Flame className="h-5 w-5 text-primary" />
+              <Box className="h-5 w-5 text-primary" />
               <span className="font-display text-lg tracking-widest">
-                SIRI <span className="text-primary">DRAGONS</span>
+                SIRI<span className="text-primary">3DCAD</span> STUDIO
               </span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Premium STL dragons, wyverns and fantasy creatures — forged for collectors,
-              tabletop heroes and game studios.
+              Premium 3D models — dragons, vehicles, architecture, miniatures and CAD —
+              crafted for collectors, makers and studios.
             </p>
           </div>
 
@@ -28,9 +28,9 @@ export function Footer() {
             <div>
               <h4 className="text-xs tracking-[0.2em] uppercase text-primary mb-4">Explore</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#gallery" className="text-muted-foreground hover:text-foreground">Dragons</a></li>
-                <li><a href="#commissions" className="text-muted-foreground hover:text-foreground">Commissions</a></li>
-                <li><a href="#contact" className="text-muted-foreground hover:text-foreground">Contact</a></li>
+                <li><a href="/models" className="text-muted-foreground hover:text-foreground">Models</a></li>
+                <li><a href="/#commissions" className="text-muted-foreground hover:text-foreground">Commissions</a></li>
+                <li><a href="/#contact" className="text-muted-foreground hover:text-foreground">Contact</a></li>
               </ul>
             </div>
             <div>
@@ -50,7 +50,7 @@ export function Footer() {
 
         <div className="ember-divider mb-6" />
         <p className="text-center text-xs tracking-[0.2em] uppercase text-muted-foreground">
-          © {new Date().getFullYear()} Siri Dragons — Forged in fire
+          © {new Date().getFullYear()} Siri3DCAD Studio — Forged in fire & precision
         </p>
       </div>
     </footer>

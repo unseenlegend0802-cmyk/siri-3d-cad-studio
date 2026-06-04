@@ -20,26 +20,28 @@ export function Hero() {
         <div className="max-w-3xl animate-rise">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ember bg-background/60 backdrop-blur text-xs tracking-[0.2em] uppercase text-ember mb-8">
             <span className="h-1.5 w-1.5 rounded-full bg-ember shadow-glow" />
-            Premium STL Forge
+            3D Design & CAD Studio
           </div>
 
           <h1 className="font-display text-5xl sm:text-6xl md:text-8xl font-bold leading-[0.95] mb-6">
             <span className="block text-foreground">SIRI</span>
-            <span className="block text-primary animate-ember-pulse text-glow">DRAGONS</span>
+            <span className="block text-primary animate-ember-pulse text-glow">3DCAD</span>
+            <span className="block text-foreground text-3xl sm:text-4xl md:text-5xl mt-3 tracking-[0.2em]">STUDIO</span>
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-10 leading-relaxed">
-            Forging Legendary Dragons, Wyverns, Fantasy Creatures and
-            <span className="text-foreground"> Premium STL Models </span>
-            for collectors, tabletop heroes, and game studios.
+            Creating <span className="text-foreground">Dragons</span>, engineering
+            <span className="text-foreground"> models</span>, miniatures, vehicles,
+            architecture and <span className="text-foreground">premium 3D assets</span>
+            — for collectors, makers, tabletop heroes and studios.
           </p>
 
           <div className="flex flex-wrap gap-4">
             <a
-              href="#gallery"
+              href="/models"
               className="group inline-flex items-center gap-2 px-7 py-4 rounded-md bg-gradient-ember text-primary-foreground font-medium shadow-ember hover:scale-[1.02] transition-transform"
             >
-              View Portfolio
+              Explore Models
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </a>
             <a
@@ -47,7 +49,7 @@ export function Hero() {
               className="group inline-flex items-center gap-2 px-7 py-4 rounded-md border border-ember bg-background/40 backdrop-blur text-foreground font-medium hover:bg-primary/10 hover:border-primary transition-all"
             >
               <Store className="h-4 w-4" />
-              STL Marketplace
+              Buy 3D Assets
             </a>
           </div>
         </div>

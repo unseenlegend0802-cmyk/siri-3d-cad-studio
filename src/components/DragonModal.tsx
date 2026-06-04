@@ -107,7 +107,7 @@ export function DragonModal({ model, related, onClose, onSelect }: Props) {
             {related.length > 0 && (
               <div>
                 <div className="ember-divider mb-6" />
-                <h3 className="font-display text-xl mb-4">Related Dragons</h3>
+                <h3 className="font-display text-xl mb-4">Related Models</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {related.map((r) => (
                     <button
