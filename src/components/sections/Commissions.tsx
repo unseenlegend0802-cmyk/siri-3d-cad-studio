@@ -1,11 +1,14 @@
-import { Skull, Bird, Swords, Box, Gamepad2 } from "lucide-react";
+import { Skull, Bird, Swords, Box, Gamepad2, Car, Cog, Lightbulb } from "lucide-react";
 
 const items = [
-  { icon: Skull, name: "Dragon Busts", desc: "Display-grade busts with cinematic detail." },
-  { icon: Bird, name: "Wyverns", desc: "Winged predators built for dynamic poses." },
-  { icon: Swords, name: "RPG Creatures", desc: "Tabletop monsters scaled for play." },
-  { icon: Box, name: "Printable STL Models", desc: "Resin & FDM ready with supports." },
-  { icon: Gamepad2, name: "Game Assets", desc: "Low-poly + PBR for real-time engines." },
+  { icon: Skull, name: "Dragons", desc: "Signature dragons, wyverns and ancients with cinematic detail." },
+  { icon: Bird, name: "Creatures", desc: "Beasts, monsters and fantasy fauna built for dynamic poses." },
+  { icon: Cog, name: "Mechanical Parts", desc: "Functional mechanisms, brackets and assemblies." },
+  { icon: Box, name: "CAD Designs", desc: "Precision parametric CAD for product and engineering work." },
+  { icon: Car, name: "Vehicles", desc: "Cars, bikes, ships and concept vehicles in detailed 3D." },
+  { icon: Lightbulb, name: "Product Concepts", desc: "From sketch to render-ready concept models." },
+  { icon: Gamepad2, name: "Game Assets", desc: "Low-poly + PBR assets ready for real-time engines." },
+  { icon: Swords, name: "Miniatures", desc: "Tabletop and RPG miniatures scaled for play." },
 ];
 
 export function Commissions() {
@@ -14,15 +17,15 @@ export function Commissions() {
       <div className="absolute inset-0 -z-10" style={{ backgroundImage: "var(--gradient-forge)" }} />
       <div className="mx-auto max-w-7xl">
         <div className="text-center mb-14">
-          <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3">— Hire the Forge</p>
+          <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3">— Hire the Studio</p>
           <h2 className="font-display text-4xl md:text-5xl mb-4">Custom Commissions</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Bring your beast to life. From single hero pieces to full creature lineups for games
-            and tabletop campaigns.
+            Bring your idea to life — from hero dragons and game creatures to CAD parts,
+            vehicles, miniatures and full product concepts.
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {items.map(({ icon: Icon, name, desc }) => (
             <div
               key={name}
