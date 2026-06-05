@@ -1,4 +1,4 @@
-import type { SketchfabModel } from "./sketchfab.functions";
+import type { CultsModel } from "./cults.functions";
 
 export const CATEGORIES = [
   "All",
@@ -24,8 +24,11 @@ const RULES: Array<{ category: Exclude<Category, "All" | "Other">; patterns: Reg
   { category: "Sci-Fi", patterns: /sci[- ]?fi|scifi|cyber|robot|mech\b|spaceship|space ship|alien|futuristic|cyberpunk/i },
 ];
 
-export function categorize(model: Pick<SketchfabModel, "name" | "description">): Exclude<Category, "All"> {
-  const haystack = `${model.name} ${model.description}`;
+export function categorize(
+  model: Pick<CultsModel, "name" | "description"> & { tags?: string[] },
+): Exclude<Category, "All"> {
+  const tagText = model.tags?.join(" ") ?? "";
+  const haystack = `${model.name} ${model.description} ${tagText}`;
   for (const { category, patterns } of RULES) {
     if (patterns.test(haystack)) return category;
   }
