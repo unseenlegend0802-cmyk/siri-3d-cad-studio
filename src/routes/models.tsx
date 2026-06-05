@@ -49,9 +49,9 @@ function ModelsPage() {
   const navigate = Route.useNavigate();
   const { data, isLoading } = useQuery(cultsModelsQuery);
 
-  const [query, setQuery] = useState(search.q ?? "");
+  const [query, setQuery] = useState<string>(search.q ?? "");
   const [category, setCategory] = useState<Category>(search.category ?? "All");
-  const [page, setPage] = useState(search.page ?? 1);
+  const [page, setPage] = useState<number>(search.page ?? 1);
 
   // Sync URL search params (one-way: state → URL)
   useEffect(() => {
