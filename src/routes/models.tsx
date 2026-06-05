@@ -1,25 +1,31 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { z } from "zod";
 import { ArrowLeft, Box, Search } from "lucide-react";
 import { SiriHeader } from "@/components/SiriHeader";
 import { Embers } from "@/components/Embers";
 import { Footer } from "@/components/sections/Footer";
-import { DragonCard, sketchfabQueryOptions } from "@/components/sections/LatestDragons";
-import { DragonModal } from "@/components/DragonModal";
-import type { SketchfabModel } from "@/lib/sketchfab.functions";
+import { ModelCard, ModelCardSkeleton } from "@/components/ModelCard";
+import { cultsModelsQuery } from "@/lib/cults-query";
 import { CATEGORIES, categorize, type Category } from "@/lib/model-categories";
 
-const title = "All Models — Siri3DCAD Studio 3D Catalog";
+const title = "All Models — Siri3DCAD Studio Catalog";
 const description =
-  "Browse the complete Siri3DCAD Studio catalog: dragons, vehicles, architecture, engineering CAD, miniatures, characters and more — synced live from Sketchfab.";
+  "Browse the complete Siri3DCAD Studio catalog: dragons, vehicles, architecture, engineering CAD, miniatures and more — synced live from Cults3D.";
+
+const searchSchema = z.object({
+  q: z.string().optional(),
+  category: z.enum(CATEGORIES).optional(),
+  page: z.number().optional(),
+});
 
 export const Route = createFileRoute("/models")({
+  validateSearch: searchSchema,
   head: () => ({
     meta: [
       { title },
       { name: "description", content: description },
-      { name: "keywords", content: "3D models, STL files, CAD models, engineering models, dragons, vehicles, miniatures, 3D printing, digital assets, Sketchfab" },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
@@ -27,18 +33,37 @@ export const Route = createFileRoute("/models")({
     ],
     links: [{ rel: "canonical", href: "/models" }],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(sketchfabQueryOptions),
+  loader: ({ context }) => context.queryClient.ensureQueryData(cultsModelsQuery),
   component: ModelsPage,
+  errorComponent: ({ error }) => (
+    <div className="min-h-screen flex items-center justify-center p-8 text-center">
+      <p className="text-muted-foreground">{error.message}</p>
+    </div>
+  ),
 });
 
 const PAGE_SIZE = 12;
 
 function ModelsPage() {
-  const { data, isLoading } = useQuery(sketchfabQueryOptions);
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<Category>("All");
-  const [page, setPage] = useState(1);
-  const [active, setActive] = useState<SketchfabModel | null>(null);
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const { data, isLoading } = useQuery(cultsModelsQuery);
+
+  const [query, setQuery] = useState(search.q ?? "");
+  const [category, setCategory] = useState<Category>(search.category ?? "All");
+  const [page, setPage] = useState(search.page ?? 1);
+
+  // Sync URL search params (one-way: state → URL)
+  useEffect(() => {
+    navigate({
+      search: {
+        q: query || undefined,
+        category: category === "All" ? undefined : category,
+        page: page > 1 ? page : undefined,
+      },
+      replace: true,
+    });
+  }, [query, category, page, navigate]);
 
   const models = data?.models ?? [];
 
@@ -58,7 +83,8 @@ function ModelsPage() {
       if (!q) return true;
       return (
         m.name.toLowerCase().includes(q) ||
-        m.description.toLowerCase().includes(q)
+        m.description.toLowerCase().includes(q) ||
+        m.tags.some((t) => t.toLowerCase().includes(q))
       );
     });
   }, [models, query, category]);
@@ -67,9 +93,6 @@ function ModelsPage() {
   const currentPage = Math.min(page, totalPages);
   const start = (currentPage - 1) * PAGE_SIZE;
   const visible = filtered.slice(start, start + PAGE_SIZE);
-  const related = active
-    ? models.filter((m) => m.uid !== active.uid).slice(0, 3)
-    : [];
 
   return (
     <div className="relative min-h-screen bg-background text-foreground">
@@ -90,15 +113,14 @@ function ModelsPage() {
               <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3">— Complete Catalog</p>
               <h1 className="font-display text-4xl md:text-6xl">All Models</h1>
               <p className="text-muted-foreground mt-4 max-w-2xl">
-                Every 3D model in the Siri3DCAD Studio archive — dragons, vehicles,
-                CAD, miniatures and more — synced live from Sketchfab.
+                Every 3D model in the Siri3DCAD Studio archive — synced live from Cults3D.
               </p>
             </div>
             <div className="relative w-full md:w-80">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
                 type="search"
-                placeholder="Search models…"
+                placeholder="Search models, tags, descriptions…"
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);
@@ -142,28 +164,25 @@ function ModelsPage() {
           {isLoading ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="rounded-lg overflow-hidden bg-card border border-border animate-pulse"
-                >
-                  <div className="aspect-square bg-muted/40" />
-                  <div className="p-6 space-y-3">
-                    <div className="h-3 w-24 bg-muted/50 rounded" />
-                    <div className="h-5 w-3/4 bg-muted/50 rounded" />
-                  </div>
-                </div>
+                <ModelCardSkeleton key={i} />
               ))}
             </div>
           ) : filtered.length === 0 ? (
             <div className="rounded-lg border border-dashed border-ember bg-card/40 p-12 text-center">
               <Box className="h-8 w-8 text-primary mx-auto mb-4" />
               <h2 className="font-display text-2xl mb-2">
-                {query || category !== "All" ? "No models match those filters" : "The forge is warming up"}
+                {query || category !== "All"
+                  ? "No models match those filters"
+                  : data?.error === "not_configured"
+                    ? "Catalog not configured"
+                    : "The forge is warming up"}
               </h2>
               <p className="text-muted-foreground max-w-md mx-auto">
                 {query || category !== "All"
                   ? "Try a different category or keyword."
-                  : "New models appear here automatically as they are published on Sketchfab."}
+                  : data?.error === "not_configured"
+                    ? "Connect the Cults3D API from the admin settings to populate the catalog."
+                    : "New models will appear here automatically as they are published on Cults3D."}
               </p>
             </div>
           ) : (
@@ -173,7 +192,7 @@ function ModelsPage() {
               </p>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {visible.map((m) => (
-                  <DragonCard key={m.uid} model={m} onOpen={setActive} />
+                  <ModelCard key={m.slug} model={m} />
                 ))}
               </div>
 
@@ -217,13 +236,6 @@ function ModelsPage() {
         </div>
       </main>
       <Footer />
-
-      <DragonModal
-        model={active}
-        related={related}
-        onClose={() => setActive(null)}
-        onSelect={setActive}
-      />
     </div>
   );
 }
