@@ -21,12 +21,11 @@ type RawCreation = {
   slug?: string;
   name?: string;
   description?: string;
-  shortContent?: string;
   url?: string;
   publishedAt?: string;
   illustrationImageUrl?: string;
-  illustrationImageUrls?: string[];
-  tags?: Array<{ name?: string } | string> | null;
+  illustrations?: Array<{ imageUrl?: string }> | null;
+  tags?: string[] | null;
   price?: { cents?: number; formatted?: string } | null;
   likesCount?: number;
   downloadsCount?: number;
@@ -51,20 +50,16 @@ function authHeader(user: string, pass: string) {
 }
 
 function normalize(r: RawCreation): CultsModel {
-  const tags = Array.isArray(r.tags)
-    ? r.tags
-        .map((t) => (typeof t === "string" ? t : t?.name))
-        .filter((t): t is string => !!t)
-    : [];
-  const gallery = Array.isArray(r.illustrationImageUrls)
-    ? r.illustrationImageUrls.filter(Boolean)
+  const tags = Array.isArray(r.tags) ? r.tags.filter((t): t is string => !!t) : [];
+  const gallery = Array.isArray(r.illustrations)
+    ? r.illustrations.map((i) => i?.imageUrl).filter((u): u is string => !!u)
     : r.illustrationImageUrl
       ? [r.illustrationImageUrl]
       : [];
   return {
     slug: r.slug ?? "",
     name: r.name ?? "Untitled",
-    description: (r.description ?? r.shortContent ?? "").trim(),
+    description: (r.description ?? "").trim(),
     url: r.url ?? "",
     publishedAt: r.publishedAt ?? "",
     thumbnail: r.illustrationImageUrl ?? gallery[0] ?? "",
@@ -114,13 +109,12 @@ const LIST_FIELDS = `
   slug
   name
   description
-  shortContent
   url
   publishedAt
   illustrationImageUrl
   likesCount
   downloadsCount
-  tags { name }
+  tags
   price { cents formatted }
 `;
 
@@ -131,10 +125,10 @@ const DETAIL_FIELDS = `
   url
   publishedAt
   illustrationImageUrl
-  illustrationImageUrls
+  illustrations { imageUrl }
   likesCount
   downloadsCount
-  tags { name }
+  tags
   price { cents formatted }
 `;
 
@@ -149,7 +143,7 @@ export const getCultsModels = createServerFn({ method: "GET" })
     const username = creds.user;
     const query = `{
       user(nick: "${username}") {
-        creations(limit: ${count}, order: PUBLISHED_AT_DESC) {
+        creations(limit: ${count}) {
           ${LIST_FIELDS}
         }
       }
