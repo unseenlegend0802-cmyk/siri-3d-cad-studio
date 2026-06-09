@@ -50,20 +50,16 @@ function authHeader(user: string, pass: string) {
 }
 
 function normalize(r: RawCreation): CultsModel {
-  const tags = Array.isArray(r.tags)
-    ? r.tags
-        .map((t) => (typeof t === "string" ? t : t?.name))
-        .filter((t): t is string => !!t)
-    : [];
-  const gallery = Array.isArray(r.illustrationImageUrls)
-    ? r.illustrationImageUrls.filter(Boolean)
+  const tags = Array.isArray(r.tags) ? r.tags.filter((t): t is string => !!t) : [];
+  const gallery = Array.isArray(r.illustrations)
+    ? r.illustrations.map((i) => i?.imageUrl).filter((u): u is string => !!u)
     : r.illustrationImageUrl
       ? [r.illustrationImageUrl]
       : [];
   return {
     slug: r.slug ?? "",
     name: r.name ?? "Untitled",
-    description: (r.description ?? r.shortContent ?? "").trim(),
+    description: (r.description ?? "").trim(),
     url: r.url ?? "",
     publishedAt: r.publishedAt ?? "",
     thumbnail: r.illustrationImageUrl ?? gallery[0] ?? "",
