@@ -109,13 +109,12 @@ const LIST_FIELDS = `
   slug
   name
   description
-  shortContent
   url
   publishedAt
   illustrationImageUrl
   likesCount
   downloadsCount
-  tags { name }
+  tags
   price { cents formatted }
 `;
 
@@ -126,10 +125,10 @@ const DETAIL_FIELDS = `
   url
   publishedAt
   illustrationImageUrl
-  illustrationImageUrls
+  illustrations { imageUrl }
   likesCount
   downloadsCount
-  tags { name }
+  tags
   price { cents formatted }
 `;
 
@@ -144,7 +143,7 @@ export const getCultsModels = createServerFn({ method: "GET" })
     const username = creds.user;
     const query = `{
       user(nick: "${username}") {
-        creations(limit: ${count}, order: PUBLISHED_AT_DESC) {
+        creations(limit: ${count}) {
           ${LIST_FIELDS}
         }
       }
