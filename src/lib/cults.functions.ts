@@ -21,12 +21,11 @@ type RawCreation = {
   slug?: string;
   name?: string;
   description?: string;
-  shortContent?: string;
   url?: string;
   publishedAt?: string;
   illustrationImageUrl?: string;
-  illustrationImageUrls?: string[];
-  tags?: Array<{ name?: string } | string> | null;
+  illustrations?: Array<{ imageUrl?: string }> | null;
+  tags?: string[] | null;
   price?: { cents?: number; formatted?: string } | null;
   likesCount?: number;
   downloadsCount?: number;
