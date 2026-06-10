@@ -1,24 +1,30 @@
-## Goal
-Make `/admin/settings` reliably render a visible Cults3D settings form instead of a blank page.
+## What's actually broken
 
-## Root cause found
-The route tree shows `/admin/settings` is registered as a child of `/admin`, but `src/routes/_authenticated/admin.tsx` is currently a parent route that only redirects and does not render an `<Outlet />`. Because child routes render through the parent outlet, the settings page can match but never display.
+The model cards are stuck rendering as skeleton placeholders on the client, so clicks do nothing. Underneath, `ModelCard` already wraps everything in a `<Link to="/models/$slug">` and `src/routes/models.$slug.tsx` already shows a "Buy on Cults3D" purchase button — so the routing and purchase UI exist. The real issue is a **hydration mismatch**:
 
-## Implementation plan
-1. Update the `/admin` parent route so it renders `<Outlet />` for child pages.
-2. Move the `/admin` to `/admin/settings` redirect into an index child route, so visiting `/admin` still lands on settings without blocking `/admin/settings`.
-3. Add a route-level error boundary for Admin Settings that displays:
-   - Error message
-   - Error details
-   - Retry button
-4. Adjust the settings page copy/buttons to match the requested visible UI:
-   - Heading: `Cults3D Settings`
-   - Fields: `Cults3D Username`, `Cults3D API Key`
-   - Buttons: `Save Settings`, `Test Connection`
-5. Ensure unauthenticated access shows a clear sign-in message instead of a blank page by making the auth gate render a visible message while redirecting.
+- The route loader prefetches Cults models on the server, so SSR renders real `<a href="/models/...">` cards.
+- The client's `QueryClient` is created fresh with no dehydrated state, so on hydration `useQuery` reports `isLoading: true` and re-renders `<ModelCardSkeleton />`.
+- React detects the `<a>` vs `<div>` mismatch (visible in the runtime error), discards the SSR tree, and the page settles on non-interactive skeletons.
 
-## Files to change
-- `src/routes/_authenticated/admin.tsx`
-- Add `src/routes/_authenticated/admin.index.tsx`
-- `src/routes/_authenticated/admin.settings.tsx`
-- `src/routes/_authenticated/route.tsx`
+A secondary mismatch source: `ModelCard` formats `publishedAt` with `toLocaleDateString(undefined, ...)`, which yields different text on server vs client locales.
+
+## Fix
+
+1. **Wire SSR ↔ Query hydration** so loader-prefetched data is available on the client without a refetch flash.
+   - Add the dependency `@tanstack/react-router-with-query`.
+   - In `src/router.tsx`, wrap the router with `routerWithQueryClient(router, queryClient)` so the QueryClient cache is dehydrated into the SSR payload and rehydrated on the client.
+
+2. **Make date formatting deterministic** in `src/components/ModelCard.tsx` — format with fixed parts (`en-US`, explicit month/day/year) so server and client produce identical strings.
+
+3. **Verify behaviour** end-to-end after build:
+   - Home page Featured / Latest grids render real cards on first paint (no skeleton flash).
+   - Clicking any card navigates to `/models/<slug>`.
+   - Detail page shows the existing "Buy on Cults3D" CTA (already implemented) opening the Cults3D listing in a new tab.
+
+No changes are needed to `ModelCard` link wiring, the `/models/$slug` route, or the purchase button — those already exist and will start working as soon as hydration is fixed.
+
+## Files touched
+
+- `package.json` / lockfile — add `@tanstack/react-router-with-query`.
+- `src/router.tsx` — wrap with `routerWithQueryClient`.
+- `src/components/ModelCard.tsx` — deterministic date formatter.
