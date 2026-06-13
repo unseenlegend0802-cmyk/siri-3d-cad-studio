@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Box } from "lucide-react";
 import type { CultsModel } from "@/lib/cults.functions";
 
-function formatDate(iso: string) {
+export function formatDate(iso: string) {
   if (!iso) return "";
   return new Date(iso).toLocaleDateString("en-US", {
     year: "numeric",
