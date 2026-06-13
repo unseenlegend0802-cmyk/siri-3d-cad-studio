@@ -54,7 +54,7 @@ export function LatestModels() {
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {latest.map((m) => (
-            <ModelCard key={m.slug} model={m} />
+                <ModelCard key={m.slug} model={m} />
               ))}
             </div>
             <div className="mt-12 flex justify-center">
