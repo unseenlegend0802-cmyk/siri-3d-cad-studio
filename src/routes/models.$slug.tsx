@@ -1,13 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ExternalLink, Heart, Download as DownloadIcon, ShoppingBag, Calendar } from "lucide-react";
+import { ArrowLeft, ExternalLink, Heart, Download as DownloadIcon, ShoppingBag } from "lucide-react";
 import { SiriHeader } from "@/components/SiriHeader";
 import { Embers } from "@/components/Embers";
 import { Footer } from "@/components/sections/Footer";
 import { ModelCard } from "@/components/ModelCard";
 import { cultsModelBySlugQuery, cultsModelsQuery } from "@/lib/cults-query";
 import { categorize } from "@/lib/model-categories";
-import { formatDate } from "@/components/ModelCard";
 
 export const Route = createFileRoute("/models/$slug")({
   loader: async ({ context, params }) => {
@@ -150,12 +149,6 @@ function ModelDetail() {
                       {m.downloadsCount}
                     </span>
                   </div>
-                  {m.publishedAt && (
-                    <p className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="h-4 w-4" />
-                      {formatDate(m.publishedAt)}
-                    </p>
-                  )}
                 </div>
 
                 <a
