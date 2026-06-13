@@ -54,17 +54,7 @@ export function LatestModels() {
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {latest.map((m) => (
-            <div>
-              <p>{m.slug}</p>
-            
-              <a
-                href={'/models/${m.slug}'}
-                style={{ color: "red", fontweight: "bold" }}
-                >
-                TEST DETAIL PAGE
-              </a>    
             <ModelCard key={m.slug} model={m} />
-            </div>
               ))}
             </div>
             <div className="mt-12 flex justify-center">
