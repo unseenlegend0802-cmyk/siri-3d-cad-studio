@@ -133,7 +133,7 @@ const DETAIL_FIELDS = `
 `;
 
 export const getCultsModels = createServerFn({ method: "GET" })
-  .inputValidator(
+  .validator(
     z.object({ count: z.number().min(1).max(100).default(50) }).optional(),
   )
   .handler(async ({ data }) => {
@@ -157,7 +157,7 @@ export const getCultsModels = createServerFn({ method: "GET" })
   });
 
 export const getCultsModelBySlug = createServerFn({ method: "GET" })
-  .inputValidator(z.object({ slug: z.string().min(1).max(255) }))
+  .validator(z.object({ slug: z.string().min(1).max(255) }))
   .handler(async ({ data }) => {
     const query = `{
       creation(slug: "${data.slug.replace(/"/g, "")}") {
@@ -199,7 +199,7 @@ export const getStudioSettings = createServerFn({ method: "GET" })
 
 export const updateStudioSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(
+  .validator(
     z.object({
       username: z.string().trim().min(1).max(120),
       apiKey: z.string().trim().min(1).max(512),
