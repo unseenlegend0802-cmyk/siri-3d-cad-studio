@@ -15,6 +15,7 @@ import { Route as DragonsRouteImport } from './routes/dragons'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ModelsIndexRouteImport } from './routes/models.index'
 import { Route as ModelsSlugRouteImport } from './routes/models.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
@@ -51,6 +52,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ModelsIndexRoute = ModelsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ModelsRoute,
 } as any)
 const ModelsSlugRoute = ModelsSlugRouteImport.update({
   id: '/$slug',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/models/$slug': typeof ModelsSlugRoute
+  '/models/': typeof ModelsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -111,10 +118,10 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dragons': typeof DragonsRoute
   '/mcp': typeof McpRoute
-  '/models': typeof ModelsRouteWithChildren
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/models/$slug': typeof ModelsSlugRoute
+  '/models': typeof ModelsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -131,6 +138,7 @@ export interface FileRoutesById {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/models/$slug': typeof ModelsSlugRoute
+  '/models/': typeof ModelsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -147,6 +155,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/models/$slug'
+    | '/models/'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/settings'
     | '/admin/'
@@ -156,10 +165,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dragons'
     | '/mcp'
-    | '/models'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/models/$slug'
+    | '/models'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/settings'
     | '/admin'
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/models/$slug'
+    | '/models/'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/'
@@ -235,6 +245,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/models/': {
+      id: '/models/'
+      path: '/'
+      fullPath: '/models/'
+      preLoaderRoute: typeof ModelsIndexRouteImport
+      parentRoute: typeof ModelsRoute
     }
     '/models/$slug': {
       id: '/models/$slug'
@@ -314,10 +331,12 @@ const AuthenticatedRouteRouteWithChildren =
 
 interface ModelsRouteChildren {
   ModelsSlugRoute: typeof ModelsSlugRoute
+  ModelsIndexRoute: typeof ModelsIndexRoute
 }
 
 const ModelsRouteChildren: ModelsRouteChildren = {
   ModelsSlugRoute: ModelsSlugRoute,
+  ModelsIndexRoute: ModelsIndexRoute,
 }
 
 const ModelsRouteWithChildren =
