@@ -115,20 +115,8 @@ function ModelDetail() {
           </Link>
 
           <div className="grid lg:grid-cols-5 gap-10">
-            <div className="lg:col-span-3 flex overflow-x-auto gap-4 pb-2 snap-x snap-mandatory">
-              {(m.gallery.length ? m.gallery : [m.thumbnail]).filter(Boolean).map((src, i) => (
-                <div
-                  key={src + i}
-                  className="flex-shrink-0 w-[85vw] md:w-[45vw] lg:w-[30vw] snap-start rounded-lg overflow-hidden bg-card border border-border"
-                >
-                  <img
-                    src={src}
-                    alt={`${m.name} — image ${i + 1}`}
-                    className="w-full h-auto"
-                    loading={i === 0 ? "eager" : "lazy"}
-                  />
-                </div>
-              ))}
+            <div className="lg:col-span-3">
+              <ModelImageGallery name={m.name} thumbnail={m.thumbnail} gallery={m.gallery} />
             </div>
 
             <aside className="lg:col-span-2">
