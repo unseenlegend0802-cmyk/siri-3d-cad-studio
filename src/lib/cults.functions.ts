@@ -244,7 +244,8 @@ export const testCultsConnection = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!roles) throw new Error("Forbidden: admin only");
     const res = await runQuery<{ user: { nick: string } | null }>(
-      `{ user(nick: "${(await loadCreds())?.user ?? ""}") { nick } }`,
+      `query TestConn($nick: String!) { user(nick: $nick) { nick } }`,
+      { nick: (await loadCreds())?.user ?? "" },
     );
     if (res.error) return { ok: false, error: res.error };
     if (!res.data?.user) return { ok: false, error: "User not found on Cults3D" };
