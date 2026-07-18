@@ -208,7 +208,7 @@ function ModelDetail() {
 
           <div className="grid lg:grid-cols-5 gap-10">
             <div className="lg:col-span-3">
-              <ModelImageGallery name={m.name} thumbnail={m.thumbnail} gallery={m.gallery} />
+              <ModelImageGallery name={m.name} thumbnail={m.thumbnail} gallery={m.gallery} videos={m.videos} />
             </div>
 
             <aside className="lg:col-span-2">
