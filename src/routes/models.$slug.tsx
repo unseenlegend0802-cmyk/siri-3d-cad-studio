@@ -13,32 +13,61 @@ function ModelImageGallery({
   name,
   thumbnail,
   gallery,
+  videos,
 }: {
   name: string;
   thumbnail: string;
   gallery: string[];
+  videos: { url: string; poster: string }[];
 }) {
-  const images = (gallery.length ? gallery : [thumbnail]).filter(Boolean);
+  type Slide =
+    | { kind: "image"; src: string }
+    | { kind: "video"; src: string; poster: string };
+
+  const slides: Slide[] = [
+    ...(gallery.length ? gallery : thumbnail ? [thumbnail] : [])
+      .filter(Boolean)
+      .map((src): Slide => ({ kind: "image", src })),
+    ...videos.map((v): Slide => ({ kind: "video", src: v.url, poster: v.poster })),
+  ];
+
   const [index, setIndex] = useState(0);
 
-  const prev = () => setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
-  const next = () => setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
+  if (slides.length === 0) return null;
+
+  const current = slides[index];
+  const prev = () => setIndex((i) => (i === 0 ? slides.length - 1 : i - 1));
+  const next = () => setIndex((i) => (i === slides.length - 1 ? 0 : i + 1));
 
   return (
     <div className="relative rounded-lg overflow-hidden bg-card border border-border">
-      <img
-        src={images[index]}
-        alt={`${name} — image ${index + 1}`}
-        className="w-full h-auto"
-        loading="eager"
-      />
+      {current.kind === "image" ? (
+        <img
+          src={current.src}
+          alt={`${name} — image ${index + 1}`}
+          className="w-full h-auto"
+          loading="eager"
+        />
+      ) : (
+        <video
+          key={current.src}
+          src={current.src}
+          poster={current.poster || thumbnail || undefined}
+          controls
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-auto"
+        />
+      )}
 
-      {images.length > 1 && (
+      {slides.length > 1 && (
         <>
           <button
             type="button"
             onClick={prev}
-            aria-label="Previous image"
+            aria-label="Previous media"
             className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
           >
             <ChevronLeft className="h-5 w-5" />
@@ -46,21 +75,21 @@ function ModelImageGallery({
           <button
             type="button"
             onClick={next}
-            aria-label="Next image"
+            aria-label="Next media"
             className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
           >
             <ChevronRight className="h-5 w-5" />
           </button>
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2">
-            {images.map((_, i) => (
+            {slides.map((s, i) => (
               <button
                 key={i}
                 type="button"
                 onClick={() => setIndex(i)}
-                aria-label={`Go to image ${i + 1}`}
+                aria-label={`Go to ${s.kind} ${i + 1}`}
                 className={`h-2 w-2 rounded-full transition-colors ${
                   i === index ? "bg-primary" : "bg-white/50 hover:bg-white/80"
-                }`}
+                } ${s.kind === "video" ? "ring-1 ring-ember" : ""}`}
               />
             ))}
           </div>
@@ -69,6 +98,7 @@ function ModelImageGallery({
     </div>
   );
 }
+
 
 export const Route = createFileRoute("/models/$slug")({
   loader: async ({ context, params }) => {
@@ -178,7 +208,7 @@ function ModelDetail() {
 
           <div className="grid lg:grid-cols-5 gap-10">
             <div className="lg:col-span-3">
-              <ModelImageGallery name={m.name} thumbnail={m.thumbnail} gallery={m.gallery} />
+              <ModelImageGallery name={m.name} thumbnail={m.thumbnail} gallery={m.gallery} videos={m.videos} />
             </div>
 
             <aside className="lg:col-span-2">

@@ -2,6 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+export type CultsVideo = { url: string; poster: string };
+
 export type CultsModel = {
   slug: string;
   name: string;
@@ -10,6 +12,7 @@ export type CultsModel = {
   publishedAt: string;
   thumbnail: string;
   gallery: string[];
+  videos: CultsVideo[];
   tags: string[];
   priceCents: number;
   priceFormatted: string;
@@ -25,11 +28,13 @@ type RawCreation = {
   publishedAt?: string;
   illustrationImageUrl?: string;
   illustrations?: Array<{ imageUrl?: string }> | null;
+  videos?: Array<{ url?: string; imageUrl?: string }> | null;
   tags?: string[] | null;
   price?: { cents?: number; formatted?: string } | null;
   likesCount?: number;
   downloadsCount?: number;
 };
+
 
 const GRAPHQL = "https://cults3d.com/graphql";
 
@@ -56,6 +61,11 @@ function normalize(r: RawCreation): CultsModel {
     : r.illustrationImageUrl
       ? [r.illustrationImageUrl]
       : [];
+  const videos: CultsVideo[] = Array.isArray(r.videos)
+    ? r.videos
+        .map((v) => ({ url: v?.url ?? "", poster: v?.imageUrl ?? "" }))
+        .filter((v) => !!v.url)
+    : [];
   return {
     slug: r.slug ?? "",
     name: r.name ?? "Untitled",
@@ -64,6 +74,7 @@ function normalize(r: RawCreation): CultsModel {
     publishedAt: r.publishedAt ?? "",
     thumbnail: r.illustrationImageUrl ?? gallery[0] ?? "",
     gallery,
+    videos,
     tags,
     priceCents: r.price?.cents ?? 0,
     priceFormatted: r.price?.formatted ?? (r.price?.cents === 0 ? "Free" : ""),
@@ -71,6 +82,7 @@ function normalize(r: RawCreation): CultsModel {
     downloadsCount: r.downloadsCount ?? 0,
   };
 }
+
 
 async function runQuery<T>(
   query: string,
@@ -119,6 +131,7 @@ const LIST_FIELDS = `
   downloadsCount
   tags
   price { cents formatted }
+  videos { url imageUrl }
 `;
 
 const DETAIL_FIELDS = `
@@ -129,11 +142,13 @@ const DETAIL_FIELDS = `
   publishedAt
   illustrationImageUrl
   illustrations { imageUrl }
+  videos { url imageUrl }
   likesCount
   downloadsCount
   tags
   price { cents formatted }
 `;
+
 
 export const getCultsModels = createServerFn({ method: "GET" })
   .inputValidator(

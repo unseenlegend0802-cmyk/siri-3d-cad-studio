@@ -20,7 +20,18 @@ export function ModelCard({ model }: { model: CultsModel }) {
       className="group relative rounded-lg overflow-hidden bg-card border border-border hover:border-primary/60 shadow-card hover:shadow-ember transition-all duration-500 flex flex-col"
     >
       <div className="relative aspect-square overflow-hidden bg-background">
-        {model.thumbnail ? (
+        {model.videos?.[0]?.url ? (
+          <video
+            src={model.videos[0].url}
+            poster={model.videos[0].poster || model.thumbnail || undefined}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+        ) : model.thumbnail ? (
           <img
             src={model.thumbnail}
             alt={`${model.name} — 3D model on Cults3D`}
@@ -32,6 +43,7 @@ export function ModelCard({ model }: { model: CultsModel }) {
             <Box className="h-10 w-10" />
           </div>
         )}
+
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />
         <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-background/80 backdrop-blur border border-ember text-[10px] tracking-[0.2em] uppercase text-ember">
           <span className="h-1 w-1 rounded-full bg-ember" />
