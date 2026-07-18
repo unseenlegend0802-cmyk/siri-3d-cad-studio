@@ -72,7 +72,10 @@ function normalize(r: RawCreation): CultsModel {
   };
 }
 
-async function runQuery<T>(query: string): Promise<{ data: T | null; error: string | null }> {
+async function runQuery<T>(
+  query: string,
+  variables?: Record<string, unknown>,
+): Promise<{ data: T | null; error: string | null }> {
   const creds = await loadCreds();
   if (!creds) {
     return { data: null, error: "Cults3D credentials not configured" };
@@ -87,7 +90,7 @@ async function runQuery<T>(query: string): Promise<{ data: T | null; error: stri
         Accept: "application/json",
         Authorization: authHeader(creds.user, creds.pass),
       },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query, variables: variables ?? {} }),
       signal: ctrl.signal,
     });
     clearTimeout(timer);
