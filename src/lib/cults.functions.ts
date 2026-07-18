@@ -2,6 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+export type CultsVideo = { url: string; poster: string };
+
 export type CultsModel = {
   slug: string;
   name: string;
@@ -10,6 +12,7 @@ export type CultsModel = {
   publishedAt: string;
   thumbnail: string;
   gallery: string[];
+  videos: CultsVideo[];
   tags: string[];
   priceCents: number;
   priceFormatted: string;
@@ -25,11 +28,13 @@ type RawCreation = {
   publishedAt?: string;
   illustrationImageUrl?: string;
   illustrations?: Array<{ imageUrl?: string }> | null;
+  videos?: Array<{ url?: string; imageUrl?: string }> | null;
   tags?: string[] | null;
   price?: { cents?: number; formatted?: string } | null;
   likesCount?: number;
   downloadsCount?: number;
 };
+
 
 const GRAPHQL = "https://cults3d.com/graphql";
 
