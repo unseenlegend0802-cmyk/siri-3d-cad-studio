@@ -1,12 +1,74 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ExternalLink, Heart, Download as DownloadIcon, ShoppingBag } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, ExternalLink, Heart, Download as DownloadIcon, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
 import { SiriHeader } from "@/components/SiriHeader";
 import { Embers } from "@/components/Embers";
 import { Footer } from "@/components/sections/Footer";
 import { ModelCard } from "@/components/ModelCard";
 import { cultsModelBySlugQuery, cultsModelsQuery } from "@/lib/cults-query";
 import { categorize } from "@/lib/model-categories";
+
+function ModelImageGallery({
+  name,
+  thumbnail,
+  gallery,
+}: {
+  name: string;
+  thumbnail: string;
+  gallery: string[];
+}) {
+  const images = (gallery.length ? gallery : [thumbnail]).filter(Boolean);
+  const [index, setIndex] = useState(0);
+
+  const prev = () => setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
+  const next = () => setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
+
+  return (
+    <div className="relative rounded-lg overflow-hidden bg-card border border-border">
+      <img
+        src={images[index]}
+        alt={`${name} — image ${index + 1}`}
+        className="w-full h-auto"
+        loading="eager"
+      />
+
+      {images.length > 1 && (
+        <>
+          <button
+            type="button"
+            onClick={prev}
+            aria-label="Previous image"
+            className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            onClick={next}
+            aria-label="Next image"
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setIndex(i)}
+                aria-label={`Go to image ${i + 1}`}
+                className={`h-2 w-2 rounded-full transition-colors ${
+                  i === index ? "bg-primary" : "bg-white/50 hover:bg-white/80"
+                }`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/models/$slug")({
   loader: async ({ context, params }) => {
@@ -115,20 +177,8 @@ function ModelDetail() {
           </Link>
 
           <div className="grid lg:grid-cols-5 gap-10">
-            <div className="lg:col-span-3 flex overflow-x-auto gap-4 pb-2 snap-x snap-mandatory">
-              {(m.gallery.length ? m.gallery : [m.thumbnail]).filter(Boolean).map((src, i) => (
-                <div
-                  key={src + i}
-                  className="flex-shrink-0 w-[85vw] md:w-[45vw] lg:w-[30vw] snap-start rounded-lg overflow-hidden bg-card border border-border"
-                >
-                  <img
-                    src={src}
-                    alt={`${m.name} — image ${i + 1}`}
-                    className="w-full h-auto"
-                    loading={i === 0 ? "eager" : "lazy"}
-                  />
-                </div>
-              ))}
+            <div className="lg:col-span-3">
+              <ModelImageGallery name={m.name} thumbnail={m.thumbnail} gallery={m.gallery} />
             </div>
 
             <aside className="lg:col-span-2">
