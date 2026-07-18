@@ -131,6 +131,7 @@ const LIST_FIELDS = `
   downloadsCount
   tags
   price { cents formatted }
+  videos { url imageUrl }
 `;
 
 const DETAIL_FIELDS = `
@@ -141,11 +142,13 @@ const DETAIL_FIELDS = `
   publishedAt
   illustrationImageUrl
   illustrations { imageUrl }
+  videos { url imageUrl }
   likesCount
   downloadsCount
   tags
   price { cents formatted }
 `;
+
 
 export const getCultsModels = createServerFn({ method: "GET" })
   .inputValidator(
