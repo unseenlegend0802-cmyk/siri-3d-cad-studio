@@ -61,6 +61,11 @@ function normalize(r: RawCreation): CultsModel {
     : r.illustrationImageUrl
       ? [r.illustrationImageUrl]
       : [];
+  const videos: CultsVideo[] = Array.isArray(r.videos)
+    ? r.videos
+        .map((v) => ({ url: v?.url ?? "", poster: v?.imageUrl ?? "" }))
+        .filter((v) => !!v.url)
+    : [];
   return {
     slug: r.slug ?? "",
     name: r.name ?? "Untitled",
@@ -69,6 +74,7 @@ function normalize(r: RawCreation): CultsModel {
     publishedAt: r.publishedAt ?? "",
     thumbnail: r.illustrationImageUrl ?? gallery[0] ?? "",
     gallery,
+    videos,
     tags,
     priceCents: r.price?.cents ?? 0,
     priceFormatted: r.price?.formatted ?? (r.price?.cents === 0 ? "Free" : ""),
@@ -76,6 +82,7 @@ function normalize(r: RawCreation): CultsModel {
     downloadsCount: r.downloadsCount ?? 0,
   };
 }
+
 
 async function runQuery<T>(
   query: string,
