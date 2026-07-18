@@ -67,7 +67,10 @@ function normalize(r: RawCreation): CultsModel {
   };
 }
 
-async function runQuery<T>(query: string): Promise<{ data: T | null; error: string | null }> {
+async function runQuery<T>(
+  query: string,
+  variables?: Record<string, unknown>,
+): Promise<{ data: T | null; error: string | null }> {
   const creds = await loadCreds();
   if (!creds) return { data: null, error: "Cults3D credentials not configured" };
   try {
@@ -81,7 +84,7 @@ async function runQuery<T>(query: string): Promise<{ data: T | null; error: stri
         Accept: "application/json",
         Authorization: `Basic ${token}`,
       },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query, variables: variables ?? {} }),
       signal: ctrl.signal,
     });
     clearTimeout(timer);
@@ -113,12 +116,15 @@ export async function fetchCultsModels(
 ): Promise<{ models: CultsModel[]; error: string | null }> {
   const creds = await loadCreds();
   if (!creds) return { models: [], error: "not_configured" };
-  const query = `{
-    user(nick: "${creds.user}") {
-      creations(limit: ${limit}) { ${LIST_FIELDS} }
+  const query = `query ListCreations($nick: String!, $limit: Int!) {
+    user(nick: $nick) {
+      creations(limit: $limit) { ${LIST_FIELDS} }
     }
   }`;
-  const res = await runQuery<{ user: { creations: RawCreation[] } | null }>(query);
+  const res = await runQuery<{ user: { creations: RawCreation[] } | null }>(query, {
+    nick: creds.user,
+    limit,
+  });
   if (res.error || !res.data?.user) {
     return { models: [], error: res.error ?? "no_user" };
   }
@@ -126,13 +132,18 @@ export async function fetchCultsModels(
   return { models, error: null };
 }
 
+const SLUG_RE = /^[a-zA-Z0-9_-]+$/;
+
 export async function fetchCultsModelBySlug(
   slug: string,
 ): Promise<{ model: CultsModel | null; error: string | null }> {
-  const query = `{
-    creation(slug: "${slug.replace(/"/g, "")}") { ${DETAIL_FIELDS} }
+  if (!SLUG_RE.test(slug) || slug.length > 255) {
+    return { model: null, error: "invalid_slug" };
+  }
+  const query = `query GetCreation($slug: String!) {
+    creation(slug: $slug) { ${DETAIL_FIELDS} }
   }`;
-  const res = await runQuery<{ creation: RawCreation | null }>(query);
+  const res = await runQuery<{ creation: RawCreation | null }>(query, { slug });
   if (res.error || !res.data?.creation) {
     return { model: null, error: res.error ?? "not_found" };
   }

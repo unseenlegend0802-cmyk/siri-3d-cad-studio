@@ -72,7 +72,10 @@ function normalize(r: RawCreation): CultsModel {
   };
 }
 
-async function runQuery<T>(query: string): Promise<{ data: T | null; error: string | null }> {
+async function runQuery<T>(
+  query: string,
+  variables?: Record<string, unknown>,
+): Promise<{ data: T | null; error: string | null }> {
   const creds = await loadCreds();
   if (!creds) {
     return { data: null, error: "Cults3D credentials not configured" };
@@ -87,7 +90,7 @@ async function runQuery<T>(query: string): Promise<{ data: T | null; error: stri
         Accept: "application/json",
         Authorization: authHeader(creds.user, creds.pass),
       },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query, variables: variables ?? {} }),
       signal: ctrl.signal,
     });
     clearTimeout(timer);
@@ -140,15 +143,17 @@ export const getCultsModels = createServerFn({ method: "GET" })
     const count = data?.count ?? 50;
     const creds = await loadCreds();
     if (!creds) return { models: [] as CultsModel[], error: "not_configured" as const };
-    const username = creds.user;
-    const query = `{
-      user(nick: "${username}") {
-        creations(limit: ${count}) {
+    const query = `query ListCreations($nick: String!, $limit: Int!) {
+      user(nick: $nick) {
+        creations(limit: $limit) {
           ${LIST_FIELDS}
         }
       }
     }`;
-    const res = await runQuery<{ user: { creations: RawCreation[] } | null }>(query);
+    const res = await runQuery<{ user: { creations: RawCreation[] } | null }>(query, {
+      nick: creds.user,
+      limit: count,
+    });
     if (res.error || !res.data?.user) {
       return { models: [] as CultsModel[], error: res.error ?? "no_user" };
     }
@@ -157,14 +162,14 @@ export const getCultsModels = createServerFn({ method: "GET" })
   });
 
 export const getCultsModelBySlug = createServerFn({ method: "GET" })
-  .inputValidator(z.object({ slug: z.string().min(1).max(255) }))
+  .inputValidator(z.object({ slug: z.string().min(1).max(255).regex(/^[a-zA-Z0-9_-]+$/) }))
   .handler(async ({ data }) => {
-    const query = `{
-      creation(slug: "${data.slug.replace(/"/g, "")}") {
+    const query = `query GetCreation($slug: String!) {
+      creation(slug: $slug) {
         ${DETAIL_FIELDS}
       }
     }`;
-    const res = await runQuery<{ creation: RawCreation | null }>(query);
+    const res = await runQuery<{ creation: RawCreation | null }>(query, { slug: data.slug });
     if (res.error || !res.data?.creation) {
       return { model: null, error: res.error ?? "not_found" };
     }
@@ -239,7 +244,8 @@ export const testCultsConnection = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!roles) throw new Error("Forbidden: admin only");
     const res = await runQuery<{ user: { nick: string } | null }>(
-      `{ user(nick: "${(await loadCreds())?.user ?? ""}") { nick } }`,
+      `query TestConn($nick: String!) { user(nick: $nick) { nick } }`,
+      { nick: (await loadCreds())?.user ?? "" },
     );
     if (res.error) return { ok: false, error: res.error };
     if (!res.data?.user) return { ok: false, error: "User not found on Cults3D" };
