@@ -100,6 +100,7 @@ async function runQuery<T>(
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        "User-Agent": "Siri3DCAD-Studio/1.0 (+https://siri-3d-cad-studio.lovable.app)",
         Authorization: authHeader(creds.user, creds.pass),
       },
       body: JSON.stringify({ query, variables: variables ?? {} }),
@@ -107,6 +108,13 @@ async function runQuery<T>(
     });
     clearTimeout(timer);
     if (!res.ok) {
+      if (res.status === 401) {
+        return {
+          data: null,
+          error:
+            "Cults3D rejected the credentials (401). Update the username / API key in Admin → Settings.",
+        };
+      }
       return { data: null, error: `Cults3D HTTP ${res.status}` };
     }
     const json = (await res.json()) as { data?: T; errors?: Array<{ message: string }> };
