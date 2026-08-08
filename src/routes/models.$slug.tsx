@@ -6,6 +6,7 @@ import { SiriHeader } from "@/components/SiriHeader";
 import { Embers } from "@/components/Embers";
 import { Footer } from "@/components/sections/Footer";
 import { ModelCard } from "@/components/ModelCard";
+import { AutoPlayVideo } from "@/components/AutoPlayVideo";
 import { cultsModelBySlugQuery, cultsModelsQuery } from "@/lib/cults-query";
 import { categorize } from "@/lib/model-categories";
 
@@ -49,15 +50,12 @@ function ModelImageGallery({
           loading="eager"
         />
       ) : (
-        <video
+        <AutoPlayVideo
           key={current.src}
           src={current.src}
           poster={current.poster || thumbnail || undefined}
           controls
-          autoPlay
-          muted
           loop
-          playsInline
           className="w-full h-auto"
         />
       )}
