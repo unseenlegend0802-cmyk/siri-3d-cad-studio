@@ -100,6 +100,7 @@ async function runQuery<T>(
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        "User-Agent": "Siri3DCAD-Studio/1.0 (+https://siri-3d-cad-studio.lovable.app)",
         Authorization: authHeader(creds.user, creds.pass),
       },
       body: JSON.stringify({ query, variables: variables ?? {} }),
