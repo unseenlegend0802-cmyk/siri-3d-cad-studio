@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Box } from "lucide-react";
+import { AutoPlayVideo } from "@/components/AutoPlayVideo";
 import type { CultsModel } from "@/lib/cults.functions";
 
 function formatDate(iso: string) {
@@ -21,13 +22,10 @@ export function ModelCard({ model }: { model: CultsModel }) {
     >
       <div className="relative aspect-square overflow-hidden bg-background">
         {model.videos?.[0]?.url ? (
-          <video
+          <AutoPlayVideo
             src={model.videos[0].url}
             poster={model.videos[0].poster || model.thumbnail || undefined}
-            autoPlay
-            muted
             loop
-            playsInline
             preload="metadata"
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
