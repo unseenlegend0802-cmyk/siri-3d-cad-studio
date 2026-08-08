@@ -108,6 +108,13 @@ async function runQuery<T>(
     });
     clearTimeout(timer);
     if (!res.ok) {
+      if (res.status === 401) {
+        return {
+          data: null,
+          error:
+            "Cults3D rejected the credentials (401). Update the username / API key in Admin → Settings.",
+        };
+      }
       return { data: null, error: `Cults3D HTTP ${res.status}` };
     }
     const json = (await res.json()) as { data?: T; errors?: Array<{ message: string }> };
