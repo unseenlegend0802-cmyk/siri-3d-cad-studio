@@ -149,6 +149,7 @@ const LIST_FIELDS = `
   url
   publishedAt
   illustrationImageUrl
+  illustrations { imageUrl }
   likesCount
   downloadsCount
   tags
