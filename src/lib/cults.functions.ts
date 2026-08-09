@@ -39,6 +39,11 @@ type RawCreation = {
 const GRAPHQL = "https://cults3d.com/graphql";
 
 async function loadCreds(): Promise<{ user: string; pass: string } | null> {
+  // Env-var override (read at request time), falls back to studio_settings.
+  const envUser = process.env["CULTS_USERNAME"];
+  const envPass = process.env["CULTS_API_KEY"];
+  if (envUser && envPass) return { user: envUser, pass: envPass };
+
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data } = await supabaseAdmin
     .from("studio_settings")
