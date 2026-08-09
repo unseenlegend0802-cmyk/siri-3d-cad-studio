@@ -41,61 +41,85 @@ function ModelImageGallery({
   const next = () => setIndex((i) => (i === slides.length - 1 ? 0 : i + 1));
 
   return (
-    <div className="relative rounded-lg overflow-hidden bg-card border border-border">
-      {current.kind === "image" ? (
-        <img
-          src={current.src}
-          alt={`${name} — image ${index + 1}`}
-          className="w-full h-auto"
-          loading="eager"
-        />
-      ) : (
-        <AutoPlayVideo
-          key={current.src}
-          src={current.src}
-          poster={current.poster || thumbnail || undefined}
-          controls
-          loop
-          className="w-full h-auto"
-        />
-      )}
+    <div className="space-y-3">
+      <div className="relative rounded-lg overflow-hidden bg-card border border-border">
+        {current.kind === "image" ? (
+          <img
+            src={current.src}
+            alt={`${name} — image ${index + 1}`}
+            className="w-full h-auto"
+            loading="eager"
+          />
+        ) : (
+          <AutoPlayVideo
+            key={current.src}
+            src={current.src}
+            poster={current.poster || thumbnail || undefined}
+            controls
+            loop
+            className="w-full h-auto"
+          />
+        )}
+
+        {slides.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={prev}
+              aria-label="Previous media"
+              className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={next}
+              aria-label="Next media"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+            <span className="absolute bottom-3 right-3 px-2 py-1 rounded-full bg-black/60 text-white text-xs">
+              {index + 1} / {slides.length}
+            </span>
+          </>
+        )}
+      </div>
 
       {slides.length > 1 && (
-        <>
-          <button
-            type="button"
-            onClick={prev}
-            aria-label="Previous media"
-            className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            onClick={next}
-            aria-label="Next media"
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2">
-            {slides.map((s, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setIndex(i)}
-                aria-label={`Go to ${s.kind} ${i + 1}`}
-                className={`h-2 w-2 rounded-full transition-colors ${
-                  i === index ? "bg-primary" : "bg-white/50 hover:bg-white/80"
-                } ${s.kind === "video" ? "ring-1 ring-ember" : ""}`}
-              />
-            ))}
-          </div>
-        </>
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {slides.map((s, i) => (
+            <button
+              key={`${s.src}-${i}`}
+              type="button"
+              onClick={() => setIndex(i)}
+              aria-label={`Go to ${s.kind} ${i + 1}`}
+              className={`relative shrink-0 h-16 w-16 rounded-md overflow-hidden border transition-colors ${
+                i === index ? "border-primary" : "border-border hover:border-primary/60"
+              }`}
+            >
+              {s.kind === "image" ? (
+                <img src={s.src} alt="" loading="lazy" className="h-full w-full object-cover" />
+              ) : (
+                <>
+                  {s.poster ? (
+                    <img src={s.poster} alt="" loading="lazy" className="h-full w-full object-cover" />
+                  ) : (
+                    <video src={s.src} muted playsInline preload="metadata" className="h-full w-full object-cover" />
+                  )}
+                  <span className="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-[10px] tracking-widest uppercase">
+                    Video
+                  </span>
+                </>
+              )}
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );
 }
+
 
 
 export const Route = createFileRoute("/models/$slug")({

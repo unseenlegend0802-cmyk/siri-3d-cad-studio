@@ -59,18 +59,27 @@ function authHeader(user: string, pass: string) {
   return `Basic ${token}`;
 }
 
+const VIDEO_RE = /\.(mp4|webm|mov|m4v)(\?|$)/i;
+
 function normalize(r: RawCreation): CultsModel {
   const tags = Array.isArray(r.tags) ? r.tags.filter((t): t is string => !!t) : [];
-  const gallery = Array.isArray(r.illustrations)
+  const allIllustrations = Array.isArray(r.illustrations)
     ? r.illustrations.map((i) => i?.imageUrl).filter((u): u is string => !!u)
     : r.illustrationImageUrl
       ? [r.illustrationImageUrl]
       : [];
-  const videos: CultsVideo[] = Array.isArray(r.videos)
-    ? r.videos
-        .map((v) => ({ url: v?.url ?? "", poster: v?.imageUrl ?? "" }))
-        .filter((v) => !!v.url)
-    : [];
+  const gallery = allIllustrations.filter((u) => !VIDEO_RE.test(u));
+  const videos: CultsVideo[] = [
+    ...allIllustrations
+      .filter((u) => VIDEO_RE.test(u))
+      .map((url) => ({ url, poster: "" })),
+    ...(Array.isArray(r.videos)
+      ? r.videos
+          .map((v) => ({ url: v?.url ?? "", poster: v?.imageUrl ?? "" }))
+          .filter((v) => !!v.url)
+      : []),
+  ].filter((v, i, arr) => arr.findIndex((x) => x.url === v.url) === i);
+
   return {
     slug: r.slug ?? "",
     name: r.name ?? "Untitled",
@@ -140,6 +149,7 @@ const LIST_FIELDS = `
   url
   publishedAt
   illustrationImageUrl
+  illustrations { imageUrl }
   likesCount
   downloadsCount
   tags
