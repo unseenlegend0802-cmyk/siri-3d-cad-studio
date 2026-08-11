@@ -83,16 +83,23 @@ export function Contact() {
           </div>
           <button
             type="submit"
-            className="group inline-flex items-center gap-2 px-7 py-4 rounded-md bg-gradient-ember text-primary-foreground font-medium shadow-ember hover:scale-[1.02] transition-transform"
+            disabled={sending}
+            className="group inline-flex items-center gap-2 px-7 py-4 rounded-md bg-gradient-ember text-primary-foreground font-medium shadow-ember hover:scale-[1.02] transition-transform disabled:opacity-60 disabled:hover:scale-100"
           >
-            <Send className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            Send Message
+            {sending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            )}
+            {sending ? "Sending…" : "Send Message"}
           </button>
           {sent && (
             <p className="mt-4 text-sm text-ember">
-              ✦ Your message has been carried to the forge.
+              ✦ Your message has been carried to the forge — the studio will reply by email.
             </p>
           )}
+          {failure && <p className="mt-4 text-sm text-destructive">{failure}</p>}
+
         </form>
       </div>
     </section>

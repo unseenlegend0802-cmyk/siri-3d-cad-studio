@@ -223,9 +223,13 @@ function AdminPage() {
           </div>
 
           <div className="mt-10 text-sm text-muted-foreground">
+            Read enquiries at{" "}
+            <Link to="/admin/messages" className="text-primary hover:text-ember">Messages</Link>
+            {" · "}
             Need to manage the catalog itself? Visit{" "}
             <Link to="/models" className="text-primary hover:text-ember">All Models</Link>.
           </div>
+
         </div>
       </main>
     </div>
