@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { z } from "zod";
-import { Send } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { submitContactMessage } from "@/lib/contact.functions";
 
 const schema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100),
@@ -9,12 +11,16 @@ const schema = z.object({
 });
 
 export function Contact() {
+  const send = useServerFn(submitContactMessage);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [failure, setFailure] = useState<string | null>(null);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
     const result = schema.safeParse({
       name: fd.get("name"),
       email: fd.get("email"),
@@ -27,10 +33,22 @@ export function Contact() {
       return;
     }
     setErrors({});
-    setSent(true);
-    e.currentTarget.reset();
-    setTimeout(() => setSent(false), 5000);
+    setFailure(null);
+    setSending(true);
+    try {
+      await send({ data: result.data });
+      setSent(true);
+      form.reset();
+      setTimeout(() => setSent(false), 8000);
+    } catch (err) {
+      setFailure(
+        err instanceof Error ? err.message : "Something went wrong. Please try again.",
+      );
+    } finally {
+      setSending(false);
+    }
   };
+
 
   return (
     <section id="contact" className="relative py-32 px-6">
@@ -65,16 +83,23 @@ export function Contact() {
           </div>
           <button
             type="submit"
-            className="group inline-flex items-center gap-2 px-7 py-4 rounded-md bg-gradient-ember text-primary-foreground font-medium shadow-ember hover:scale-[1.02] transition-transform"
+            disabled={sending}
+            className="group inline-flex items-center gap-2 px-7 py-4 rounded-md bg-gradient-ember text-primary-foreground font-medium shadow-ember hover:scale-[1.02] transition-transform disabled:opacity-60 disabled:hover:scale-100"
           >
-            <Send className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            Send Message
+            {sending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            )}
+            {sending ? "Sending…" : "Send Message"}
           </button>
           {sent && (
             <p className="mt-4 text-sm text-ember">
-              ✦ Your message has been carried to the forge.
+              ✦ Your message has been carried to the forge — the studio will reply by email.
             </p>
           )}
+          {failure && <p className="mt-4 text-sm text-destructive">{failure}</p>}
+
         </form>
       </div>
     </section>

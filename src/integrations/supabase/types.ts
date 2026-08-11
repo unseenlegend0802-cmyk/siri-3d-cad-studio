@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_submissions: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          notified_at: string | null
+          read_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          notified_at?: string | null
+          read_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          notified_at?: string | null
+          read_at?: string | null
+        }
+        Relationships: []
+      }
       studio_settings: {
         Row: {
           cults_api_key: string | null
