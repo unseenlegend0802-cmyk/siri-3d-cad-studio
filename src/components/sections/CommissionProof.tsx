@@ -2,19 +2,19 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Heart, Layers, ShieldCheck } from "lucide-react";
 import { cultsModelsQuery } from "@/lib/cults-query";
-import { categorizeModel } from "@/lib/model-categories";
+import { categorize } from "@/lib/model-categories";
 
 export function CommissionProof() {
   const { data, isLoading } = useQuery(cultsModelsQuery);
   const models = data?.models ?? [];
 
   const showcase = [...models]
-    .filter((m) => m.thumbnailUrl)
+    .filter((m) => m.thumbnail)
     .sort((a, b) => b.likesCount - a.likesCount)
     .slice(0, 6);
 
   const totalLikes = models.reduce((sum, m) => sum + (m.likesCount ?? 0), 0);
-  const categories = new Set(models.map((m) => categorizeModel(m))).size;
+  const categories = new Set(models.map((m) => categorize(m))).size;
 
   if (!isLoading && showcase.length === 0) return null;
 
@@ -62,14 +62,14 @@ export function CommissionProof() {
                   className="group relative block aspect-4/3 overflow-hidden rounded-lg border border-border hover:border-primary/60 transition-colors"
                 >
                   <img
-                    src={m.thumbnailUrl!}
+                    src={m.thumbnail!}
                     alt={`Commissioned-style 3D model: ${m.name}`}
                     loading="lazy"
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-background to-transparent">
                     <p className="text-sm font-medium line-clamp-1">{m.name}</p>
-                    <p className="text-xs text-muted-foreground">{categorizeModel(m)}</p>
+                    <p className="text-xs text-muted-foreground">{categorize(m)}</p>
                   </div>
                 </Link>
               ))}
