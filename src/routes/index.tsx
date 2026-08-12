@@ -7,6 +7,7 @@ import { ModelOfTheWeek } from "@/components/sections/ModelOfTheWeek";
 import { LatestModels } from "@/components/sections/LatestModels";
 import { Categories } from "@/components/sections/Categories";
 import { Commissions } from "@/components/sections/Commissions";
+import { CommissionProof } from "@/components/sections/CommissionProof";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 import { cultsModelsQuery } from "@/lib/cults-query";
