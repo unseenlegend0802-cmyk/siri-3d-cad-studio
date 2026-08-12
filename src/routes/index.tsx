@@ -77,6 +77,7 @@ function Index() {
         <LatestModels />
         <Categories />
         <Commissions />
+        <CommissionProof />
         <Contact />
       </main>
       <Footer />
