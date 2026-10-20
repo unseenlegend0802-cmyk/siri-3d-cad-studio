@@ -1,12 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Heart, Layers, ShieldCheck } from "lucide-react";
-import { cultsModelsQuery } from "@/lib/cults-query";
+import type { CultsModel } from "@/lib/cults.functions";
 import { categorize } from "@/lib/model-categories";
 
-export function CommissionProof() {
-  const { data, isLoading } = useQuery(cultsModelsQuery);
-  const models = data?.models ?? [];
+export function CommissionProof({ models }: { models: CultsModel[] }) {
 
   const showcase = [...models]
     .filter((m) => m.thumbnail)
@@ -16,7 +13,7 @@ export function CommissionProof() {
   const totalLikes = models.reduce((sum, m) => sum + (m.likesCount ?? 0), 0);
   const categories = new Set(models.map((m) => categorize(m))).size;
 
-  if (!isLoading && showcase.length === 0) return null;
+  if (showcase.length === 0) return null;
 
   const stats = [
     { icon: Layers, value: `${models.length}+`, label: "Models delivered & published" },
@@ -43,18 +40,14 @@ export function CommissionProof() {
               className="p-6 rounded-lg bg-card border border-border text-center"
             >
               <Icon className="h-5 w-5 text-primary mx-auto mb-3" />
-              <div className="font-display text-3xl mb-1">{isLoading ? "—" : value}</div>
+              <div className="font-display text-3xl mb-1">{value}</div>
               <p className="text-sm text-muted-foreground">{label}</p>
             </div>
           ))}
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {isLoading
-            ? Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="aspect-4/3 rounded-lg bg-muted animate-pulse" />
-              ))
-            : showcase.map((m) => (
+          {showcase.map((m) => (
                 <Link
                   key={m.slug}
                   to="/models/$slug"
@@ -72,7 +65,7 @@ export function CommissionProof() {
                     <p className="text-xs text-muted-foreground">{categorize(m)}</p>
                   </div>
                 </Link>
-              ))}
+          ))}
         </div>
       </div>
     </section>

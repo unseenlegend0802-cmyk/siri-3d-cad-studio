@@ -1,15 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
 import { Star } from "lucide-react";
-import { cultsModelsQuery } from "@/lib/cults-query";
+import type { CultsModel } from "@/lib/cults.functions";
 import { ModelCard, ModelCardSkeleton } from "@/components/ModelCard";
 
-export function FeaturedCollection() {
-  const { data, isLoading } = useQuery(cultsModelsQuery);
-  const models = data?.models ?? [];
+export function FeaturedCollection({ models }: { models: CultsModel[] }) {
   // Auto: top 3 by likes
   const featured = [...models].sort((a, b) => b.likesCount - a.likesCount).slice(0, 3);
 
-  if (!isLoading && featured.length === 0) return null;
+  if (featured.length === 0) return null;
 
   return (
     <section id="featured" className="relative py-32 px-6 bg-gradient-dark">
@@ -27,9 +24,7 @@ export function FeaturedCollection() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {isLoading
-            ? Array.from({ length: 3 }).map((_, i) => <ModelCardSkeleton key={i} />)
-            : featured.map((m) => <ModelCard key={m.slug} model={m} />)}
+          {featured.map((m) => <ModelCard key={m.slug} model={m} />)}
         </div>
       </div>
     </section>

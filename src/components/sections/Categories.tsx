@@ -1,8 +1,7 @@
 import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Box, Cog, Castle, Car, Crown, Rocket, Sword, Sparkles } from "lucide-react";
-import { cultsModelsQuery } from "@/lib/cults-query";
+import type { CultsModel } from "@/lib/cults.functions";
 import { categorize, CATEGORIES, type Category } from "@/lib/model-categories";
 
 const ICONS: Record<Exclude<Category, "All">, typeof Box> = {
@@ -16,9 +15,7 @@ const ICONS: Record<Exclude<Category, "All">, typeof Box> = {
   Other: Box,
 };
 
-export function Categories() {
-  const { data } = useQuery(cultsModelsQuery);
-  const models = data?.models ?? [];
+export function Categories({ models }: { models: CultsModel[] }) {
 
   const counts = useMemo(() => {
     const map: Record<string, number> = {};

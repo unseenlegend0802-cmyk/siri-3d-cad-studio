@@ -129,8 +129,8 @@ export const Route = createFileRoute("/models/$slug")({
     );
     if (!detail?.model) throw notFound();
     // Pre-warm the catalog for related models
-    await context.queryClient.ensureQueryData(cultsModelsQuery).catch(() => null);
-    return detail;
+    const catalog = await context.queryClient.ensureQueryData(cultsModelsQuery).catch(() => null);
+    return { detail, catalog };
   },
   head: ({ loaderData }) => {
     const m = loaderData?.model;
@@ -203,8 +203,7 @@ export const Route = createFileRoute("/models/$slug")({
 
 function ModelDetail() {
   const { slug } = Route.useParams();
-  const { data: detail } = useQuery(cultsModelBySlugQuery(slug));
-  const { data: catalog } = useQuery(cultsModelsQuery);
+  const { detail, catalog } = Route.useLoaderData();
 
   const m = detail?.model;
   if (!m) return null;

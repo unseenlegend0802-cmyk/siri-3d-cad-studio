@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { ArrowLeft, Box, Search } from "lucide-react";
 import { SiriHeader } from "@/components/SiriHeader";
@@ -47,7 +46,8 @@ const PAGE_SIZE = 12;
 function ModelsPage() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const { data, isLoading } = useQuery(cultsModelsQuery);
+  const data = Route.useLoaderData();
+  const isLoading = false;
 
   const [query, setQuery] = useState<string>(search.q ?? "");
   const [category, setCategory] = useState<Category>(search.category ?? "All");
