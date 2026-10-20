@@ -26,10 +26,10 @@ function ModelImageGallery({
     | { kind: "video"; src: string; poster: string };
 
   const slides: Slide[] = [
+    ...videos.map((v): Slide => ({ kind: "video", src: v.url, poster: v.poster })),
     ...(gallery.length ? gallery : thumbnail ? [thumbnail] : [])
       .filter(Boolean)
       .map((src): Slide => ({ kind: "image", src })),
-    ...videos.map((v): Slide => ({ kind: "video", src: v.url, poster: v.poster })),
   ];
 
   const [index, setIndex] = useState(0);
