@@ -181,7 +181,7 @@ export const Route = createFileRoute("/models/$slug")({
     <div className="min-h-screen flex items-center justify-center p-8 text-center">
       <div>
         <h1 className="font-display text-2xl mb-2">Couldn't load this model</h1>
-        <p className="text-muted-foreground">{error.message}</p>
+        <p className="text-muted-foreground">{error instanceof Error ? error.message : String(error)}</p>
         <Link to="/models" className="text-primary mt-4 inline-block">
           ← Back to catalog
         </Link>
