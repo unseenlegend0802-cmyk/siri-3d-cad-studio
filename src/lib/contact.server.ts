@@ -23,7 +23,7 @@ function escapeHtml(value: string) {
  * Never throws — a failed notification must not lose the stored submission.
  */
 export async function notifyOwner(submission: SubmissionPayload): Promise<boolean> {
-  const to = process.env["CONTACT_NOTIFY_EMAIL"] ?? "unseenlegend0802@gmail.com";
+  const to = "unseenlegend0802@gmail.com";
   const lovableKey = process.env["LOVABLE_API_KEY"];
   const resendKey = process.env["RESEND_API_KEY"];
   const from = process.env["CONTACT_FROM_EMAIL"] ?? "Siri3DCAD Studio <onboarding@resend.dev>";
