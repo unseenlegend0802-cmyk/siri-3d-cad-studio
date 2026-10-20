@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, ExternalLink, Flame } from "lucide-react";
 import type { CultsModel } from "@/lib/cults.functions";
-import { ModelCard, ModelCardSkeleton } from "@/components/ModelCard";
+import { ModelCard } from "@/components/ModelCard";
 
 export function LatestModels({ models, error }: { models: CultsModel[]; error: string | null }) {
   const latest = [...models]

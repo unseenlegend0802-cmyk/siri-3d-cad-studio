@@ -5,7 +5,7 @@ import { ArrowLeft, Box, Search } from "lucide-react";
 import { SiriHeader } from "@/components/SiriHeader";
 import { Embers } from "@/components/Embers";
 import { Footer } from "@/components/sections/Footer";
-import { ModelCard, ModelCardSkeleton } from "@/components/ModelCard";
+import { ModelCard } from "@/components/ModelCard";
 import { cultsModelsQuery } from "@/lib/cults-query";
 import { CATEGORIES, categorize, type Category } from "@/lib/model-categories";
 
@@ -47,7 +47,6 @@ function ModelsPage() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const data = Route.useLoaderData();
-  const isLoading = false;
 
   const [query, setQuery] = useState<string>(search.q ?? "");
   const [category, setCategory] = useState<Category>(search.category ?? "All");
@@ -161,13 +160,7 @@ function ModelsPage() {
 
           <div className="ember-divider mb-10" />
 
-          {isLoading ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <ModelCardSkeleton key={i} />
-              ))}
-            </div>
-          ) : filtered.length === 0 ? (
+          {filtered.length === 0 ? (
             <div className="rounded-lg border border-dashed border-ember bg-card/40 p-12 text-center">
               <Box className="h-8 w-8 text-primary mx-auto mb-4" />
               <h2 className="font-display text-2xl mb-2">
