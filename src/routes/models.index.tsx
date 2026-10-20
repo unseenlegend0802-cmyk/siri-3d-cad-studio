@@ -37,7 +37,7 @@ export const Route = createFileRoute("/models/")({
   component: ModelsPage,
   errorComponent: ({ error }) => (
     <div className="min-h-screen flex items-center justify-center p-8 text-center">
-      <p className="text-muted-foreground">{error.message}</p>
+      <p className="text-muted-foreground">{error instanceof Error ? error.message : String(error)}</p>
     </div>
   ),
 });

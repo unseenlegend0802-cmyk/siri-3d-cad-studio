@@ -59,7 +59,7 @@ export const Route = createFileRoute("/")({
     <div className="min-h-screen flex items-center justify-center text-center p-8">
       <div>
         <h1 className="font-display text-2xl mb-2">The forge cooled down</h1>
-        <p className="text-muted-foreground">{error.message}</p>
+        <p className="text-muted-foreground">{error instanceof Error ? error.message : String(error)}</p>
       </div>
     </div>
   ),
