@@ -1,12 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, ExternalLink, Flame } from "lucide-react";
-import { cultsModelsQuery } from "@/lib/cults-query";
-import { ModelCard, ModelCardSkeleton } from "@/components/ModelCard";
+import type { CultsModel } from "@/lib/cults.functions";
+import { ModelCard } from "@/components/ModelCard";
 
-export function LatestModels() {
-  const { data, isLoading } = useQuery(cultsModelsQuery);
-  const models = data?.models ?? [];
+export function LatestModels({ models, error }: { models: CultsModel[]; error: string | null }) {
   const latest = [...models]
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
     .slice(0, 6);
@@ -25,18 +22,12 @@ export function LatestModels() {
           </p>
         </div>
 
-        {isLoading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <ModelCardSkeleton key={i} />
-            ))}
-          </div>
-        ) : latest.length === 0 ? (
+        {latest.length === 0 ? (
           <div className="rounded-lg border border-dashed border-ember bg-card/40 p-10 text-center">
             <Flame className="h-8 w-8 text-primary mx-auto mb-4" />
             <h3 className="font-display text-2xl mb-2">The forge is warming up</h3>
             <p className="text-muted-foreground max-w-md mx-auto">
-              {data?.error === "not_configured"
+              {error === "not_configured"
                 ? "Cults3D API credentials are not configured yet. Visit the admin settings to connect."
                 : "New models will appear here the moment they are published on Cults3D."}
             </p>

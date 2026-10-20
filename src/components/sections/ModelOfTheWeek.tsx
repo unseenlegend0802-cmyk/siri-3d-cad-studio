@@ -1,12 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Crown } from "lucide-react";
-import { cultsModelsQuery, weekOfYear } from "@/lib/cults-query";
+import { weekOfYear } from "@/lib/cults-query";
+import type { CultsModel } from "@/lib/cults.functions";
 
-export function ModelOfTheWeek() {
-  const { data, isLoading } = useQuery(cultsModelsQuery);
-  const models = data?.models ?? [];
-  if (isLoading || models.length === 0) return null;
+export function ModelOfTheWeek({ models }: { models: CultsModel[] }) {
+  if (models.length === 0) return null;
 
   const pick = models[weekOfYear() % models.length];
   if (!pick) return null;

@@ -66,18 +66,20 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { models, error } = Route.useLoaderData();
+
   return (
     <div className="relative min-h-screen bg-background text-foreground">
       <Embers />
       <SiriHeader />
       <main className="relative z-10">
         <Hero />
-        <FeaturedCollection />
-        <ModelOfTheWeek />
-        <LatestModels />
-        <Categories />
+        <FeaturedCollection models={models} />
+        <ModelOfTheWeek models={models} />
+        <LatestModels models={models} error={error} />
+        <Categories models={models} />
         <Commissions />
-        <CommissionProof />
+        <CommissionProof models={models} />
         <Contact />
       </main>
       <Footer />

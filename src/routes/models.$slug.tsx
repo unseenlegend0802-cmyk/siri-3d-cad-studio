@@ -1,5 +1,4 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { ArrowLeft, ExternalLink, Heart, Download as DownloadIcon, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
 import { SiriHeader } from "@/components/SiriHeader";
@@ -129,11 +128,11 @@ export const Route = createFileRoute("/models/$slug")({
     );
     if (!detail?.model) throw notFound();
     // Pre-warm the catalog for related models
-    await context.queryClient.ensureQueryData(cultsModelsQuery).catch(() => null);
-    return detail;
+    const catalog = await context.queryClient.ensureQueryData(cultsModelsQuery).catch(() => null);
+    return { detail, catalog };
   },
   head: ({ loaderData }) => {
-    const m = loaderData?.model;
+    const m = loaderData?.detail?.model;
     const title = m ? `${m.name} — Siri3DCAD Studio` : "Model — Siri3DCAD Studio";
     const description =
       m?.description?.slice(0, 200) ??
@@ -202,9 +201,7 @@ export const Route = createFileRoute("/models/$slug")({
 });
 
 function ModelDetail() {
-  const { slug } = Route.useParams();
-  const { data: detail } = useQuery(cultsModelBySlugQuery(slug));
-  const { data: catalog } = useQuery(cultsModelsQuery);
+  const { detail, catalog } = Route.useLoaderData();
 
   const m = detail?.model;
   if (!m) return null;
