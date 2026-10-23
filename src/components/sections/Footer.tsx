@@ -39,6 +39,18 @@ export function Footer() {
         <div className="mx-auto max-w-7xl px-6 py-6 text-xs text-muted-foreground flex flex-wrap justify-between gap-2">
           <span>© {new Date().getFullYear()} Siri3DCAD Studio. All rights reserved.</span>
           <span>Forged with passion. Synced from Cults3D.</span>
+          <span>
+            Soundtrack: “Ossuary 6 — Air” by Kevin MacLeod (
+            <a
+              href="https://incompetech.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground"
+            >
+              incompetech.com
+            </a>
+            ), CC BY 4.0
+          </span>
         </div>
       </div>
     </footer>
