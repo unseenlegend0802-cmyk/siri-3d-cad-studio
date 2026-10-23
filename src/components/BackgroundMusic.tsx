@@ -19,6 +19,8 @@ export function BackgroundMusic() {
     const audio = audioRef.current;
     if (!audio) return;
 
+    audio.volume = 0.3;
+
     let dismissed = false;
     try {
       dismissed = window.localStorage.getItem(STORAGE_KEY) === "off";
@@ -93,7 +95,6 @@ export function BackgroundMusic() {
         src={soundtrack.url}
         loop
         preload="none"
-        volume={0.3}
         aria-hidden="true"
       />
       <button
