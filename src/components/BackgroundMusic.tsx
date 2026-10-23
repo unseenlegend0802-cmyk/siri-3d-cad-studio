@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Music, VolumeX } from "lucide-react";
-import soundtrack from "@/assets/soundtrack.mp3.asset.json";
+import soundtrack from "@/assets/soundtrack-loop.mp3.asset.json";
 
 const STORAGE_KEY = "siri-studio-music";
 
