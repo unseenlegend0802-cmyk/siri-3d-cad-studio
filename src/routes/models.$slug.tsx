@@ -6,6 +6,7 @@ import { Embers } from "@/components/Embers";
 import { Footer } from "@/components/sections/Footer";
 import { ModelCard } from "@/components/ModelCard";
 import { AutoPlayVideo } from "@/components/AutoPlayVideo";
+import { ShareButton } from "@/components/ShareButton";
 import { cultsModelBySlugQuery, cultsModelsQuery } from "@/lib/cults-query";
 import { categorize } from "@/lib/model-categories";
 

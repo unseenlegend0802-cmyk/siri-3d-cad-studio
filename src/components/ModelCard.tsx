@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Box } from "lucide-react";
 import { AutoPlayVideo } from "@/components/AutoPlayVideo";
+import { ShareButton } from "@/components/ShareButton";
 import type { CultsModel } from "@/lib/cults.functions";
 
 function formatDate(iso: string) {
@@ -52,6 +53,13 @@ export function ModelCard({ model }: { model: CultsModel }) {
             {model.priceFormatted}
           </span>
         )}
+        <ShareButton
+          url={`/models/${model.slug}`}
+          title={model.name}
+          text={`Check out ${model.name} on Siri3DCAD Studio`}
+          ariaLabel={`Share ${model.name}`}
+          className="absolute bottom-3 right-3 z-10 p-2 rounded-full bg-background/80 backdrop-blur border border-border text-muted-foreground hover:text-ember hover:border-ember shadow-card transition-colors"
+        />
       </div>
       <div className="p-6 flex-1 flex flex-col">
         {model.publishedAt && (

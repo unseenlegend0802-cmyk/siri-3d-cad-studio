@@ -1,4 +1,5 @@
 import { ExternalLink } from "lucide-react";
+import { ShareButton } from "@/components/ShareButton";
 
 export function Footer() {
   return (
@@ -24,15 +25,25 @@ export function Footer() {
         </div>
         <div>
           <p className="text-xs tracking-[0.2em] uppercase text-primary mb-3">Marketplace</p>
-          <a
-            href="https://cults3d.com/en/users/Siri3DCAD/3d-models"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm text-foreground hover:text-primary"
-          >
-            Cults3D Profile
-            <ExternalLink className="h-3 w-3" />
-          </a>
+          <div className="space-y-3">
+            <a
+              href="https://cults3d.com/en/users/Siri3DCAD/3d-models"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm text-foreground hover:text-primary"
+            >
+              Cults3D Profile
+              <ExternalLink className="h-3 w-3" />
+            </a>
+            <ShareButton
+              url="/"
+              title="Siri3DCAD Studio"
+              text="Siri3DCAD Studio — premium 3D models, dragons, CAD, miniatures and digital assets"
+              className="flex items-center gap-1.5 text-sm text-foreground hover:text-primary transition-colors"
+            >
+              Share this studio
+            </ShareButton>
+          </div>
         </div>
       </div>
       <div className="border-t border-border">
