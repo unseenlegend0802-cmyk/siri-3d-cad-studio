@@ -260,6 +260,14 @@ function ModelDetail() {
                   <ShoppingBag className="h-4 w-4" />
                   Buy on Cults3D
                 </a>
+                <ShareButton
+                  url={`/models/${m.slug}`}
+                  title={m.name}
+                  text={`Check out ${m.name} on Siri3DCAD Studio`}
+                  className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-md border border-border bg-card text-sm text-foreground hover:border-primary hover:text-primary transition-colors"
+                >
+                  Share this model
+                </ShareButton>
                 <a
                   href={m.url}
                   target="_blank"
