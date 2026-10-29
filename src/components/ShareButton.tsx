@@ -44,7 +44,7 @@ export async function shareLink(opts: {
   }
 
   try {
-    if (navigator.clipboard?.writeText) {
+    if (typeof navigator !== "undefined" && navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
       await navigator.clipboard.writeText(url);
       return "copied";
     }
