@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   Check,
   Facebook,
+  Instagram,
   Link2,
   Mail,
   MessageCircle,
@@ -23,7 +24,20 @@ export function toAbsoluteUrl(path: string): string {
 
 export type ShareResult = "shared" | "copied" | "cancelled" | "failed";
 
-/** Native OS share sheet (mobile), with clipboard fallback. */
+/**
+ * Like Flipkart/Amazon: phones/tablets get the OS share sheet
+ * (WhatsApp, Instagram, Messages, ...). Desktop browsers get the
+ * in-page app menu instead, even when navigator.share exists
+ * (desktop Chrome/Edge expose it but it is not the e-commerce
+ * experience users expect).
+ */
+export function isMobileDevice(): boolean {
+  if (typeof window === "undefined" || typeof navigator === "undefined") return false;
+  const coarsePointer = typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches;
+  return coarsePointer || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+}
+
+/** Native OS share sheet (mobile only), with clipboard fallback. */
 export async function shareLink(opts: {
   url: string;
   title: string;
@@ -31,7 +45,7 @@ export async function shareLink(opts: {
 }): Promise<ShareResult> {
   const url = toAbsoluteUrl(opts.url);
 
-  if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+  if (isMobileDevice() && typeof navigator.share === "function") {
     try {
       await navigator.share({ title: opts.title, text: opts.text, url });
       return "shared";
@@ -66,7 +80,14 @@ export async function shareLink(opts: {
   }
 }
 
-type AppShare = { id: string; label: string; icon: LucideIcon; build: (url: string, title: string, text: string) => string };
+type AppShare = {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  build: (url: string, title: string, text: string) => string;
+  /** Copies the link first, then opens the app so the user can paste (apps with no web share URL, e.g. Instagram). */
+  copyFirst?: boolean;
+};
 
 const APP_SHARES: AppShare[] = [
   {
@@ -75,6 +96,13 @@ const APP_SHARES: AppShare[] = [
     icon: MessageCircle,
     build: (url, _title, text) =>
       `https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`,
+  },
+  {
+    id: "instagram",
+    label: "Instagram",
+    icon: Instagram,
+    copyFirst: true,
+    build: () => "https://www.instagram.com/",
   },
   {
     id: "facebook",
@@ -145,8 +173,10 @@ export function ShareButton({
       e.preventDefault();
       e.stopPropagation();
       const abs = toAbsoluteUrl(url);
-      // Like Flipkart/Amazon: use the phone's native share sheet when available.
-      if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+      // Like Flipkart/Amazon: on phones/tablets open the OS share sheet
+      // (WhatsApp, Instagram, Messages, ...). Desktop always gets the
+      // in-page app menu, even if navigator.share exists.
+      if (isMobileDevice() && typeof navigator.share === "function") {
         const result = await shareLink({ url: abs, title, text });
         if (result === "cancelled") return;
         if (result === "failed") {
@@ -226,11 +256,21 @@ export function ShareButton({
             <p className="text-sm text-muted-foreground truncate mb-5">{title}</p>
 
             <div className="grid grid-cols-3 gap-3">
-              {APP_SHARES.map(({ id, label, icon: Icon, build }) => (
+              {APP_SHARES.map(({ id, label, icon: Icon, build, copyFirst }) => (
                 <button
                   key={id}
                   type="button"
-                  onClick={() => {
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    if (copyFirst) {
+                      // Apps like Instagram have no web share URL: copy the
+                      // link, then open the app so the user can paste it.
+                      try {
+                        await navigator.clipboard.writeText(abs);
+                      } catch {
+                        // ignore — still open the app below
+                      }
+                    }
                     openShareTarget(build(abs, title, shareText));
                     setSheetOpen(false);
                   }}
