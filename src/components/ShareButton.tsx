@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import {
+  Aperture,
+  Camera,
   Check,
   Facebook,
   Instagram,
@@ -87,6 +89,8 @@ type AppShare = {
   build: (url: string, title: string, text: string) => string;
   /** Copies the link first, then opens the app so the user can paste (apps with no web share URL, e.g. Instagram). */
   copyFirst?: boolean;
+  /** Story/Status tiles: copy the link, then open the app's story/status surface. */
+  kind?: "insta-story" | "wa-status";
 };
 
 const APP_SHARES: AppShare[] = [
@@ -98,10 +102,24 @@ const APP_SHARES: AppShare[] = [
       `https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`,
   },
   {
+    id: "wa-status",
+    label: "Status",
+    icon: Aperture,
+    kind: "wa-status",
+    build: () => "https://web.whatsapp.com/",
+  },
+  {
     id: "instagram",
     label: "Instagram",
     icon: Instagram,
     copyFirst: true,
+    build: () => "https://www.instagram.com/",
+  },
+  {
+    id: "insta-story",
+    label: "Story",
+    icon: Camera,
+    kind: "insta-story",
     build: () => "https://www.instagram.com/",
   },
   {
@@ -133,12 +151,40 @@ const APP_SHARES: AppShare[] = [
   },
 ];
 
-function openShareTarget(href: string) {
-  if (href.startsWith("mailto:")) {
-    window.location.href = href;
-    return;
+/**
+ * Story/Status tiles: Instagram and WhatsApp do not let a website post
+ * into a Story, Reel or Status directly, so copy the link and open the
+ * right surface for the user to paste it.
+ */
+async function openStoryStatus(
+  kind: "insta-story" | "wa-status",
+  url: string,
+): Promise<string> {
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch {
+    // ignore — still open the app below
   }
-  window.open(href, "_blank", "noopener,noreferrer,width=640,height=640");
+  if (isMobileDevice()) {
+    window.location.href = kind === "insta-story" ? "instagram://story-camera" : "whatsapp://";
+    // If the app didn't open (not installed), fall back to the website.
+    window.setTimeout(() => {
+      if (!document.hidden) {
+        window.location.href = kind === "insta-story" ? "https://www.instagram.com/" : "https://web.whatsapp.com/";
+      }
+    }, 1200);
+    return kind === "insta-story"
+      ? "Link copied — paste it in your Instagram Story"
+      : "Link copied — paste it in WhatsApp Status";
+  }
+  window.open(
+    kind === "insta-story" ? "https://www.instagram.com/" : "https://web.whatsapp.com/",
+    "_blank",
+    "noopener,noreferrer",
+  );
+  return kind === "insta-story"
+    ? "Link copied — open Instagram Stories and add it"
+    : "Link copied — open WhatsApp and post it as your Status";
 }
 
 export function ShareButton({
