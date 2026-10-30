@@ -151,6 +151,14 @@ const APP_SHARES: AppShare[] = [
   },
 ];
 
+function openShareTarget(href: string) {
+  if (href.startsWith("mailto:")) {
+    window.location.href = href;
+    return;
+  }
+  window.open(href, "_blank", "noopener,noreferrer,width=640,height=640");
+}
+
 /**
  * Story/Status tiles: Instagram and WhatsApp do not let a website post
  * into a Story, Reel or Status directly, so copy the link and open the
