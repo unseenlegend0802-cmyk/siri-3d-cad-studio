@@ -256,11 +256,21 @@ export function ShareButton({
             <p className="text-sm text-muted-foreground truncate mb-5">{title}</p>
 
             <div className="grid grid-cols-3 gap-3">
-              {APP_SHARES.map(({ id, label, icon: Icon, build }) => (
+              {APP_SHARES.map(({ id, label, icon: Icon, build, copyFirst }) => (
                 <button
                   key={id}
                   type="button"
-                  onClick={() => {
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    if (copyFirst) {
+                      // Apps like Instagram have no web share URL: copy the
+                      // link, then open the app so the user can paste it.
+                      try {
+                        await navigator.clipboard.writeText(abs);
+                      } catch {
+                        // ignore — still open the app below
+                      }
+                    }
                     openShareTarget(build(abs, title, shareText));
                     setSheetOpen(false);
                   }}
