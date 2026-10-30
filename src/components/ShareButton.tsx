@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import {
+  Aperture,
+  Camera,
   Check,
   Facebook,
   Instagram,
@@ -87,6 +89,8 @@ type AppShare = {
   build: (url: string, title: string, text: string) => string;
   /** Copies the link first, then opens the app so the user can paste (apps with no web share URL, e.g. Instagram). */
   copyFirst?: boolean;
+  /** Story/Status tiles: copy the link, then open the app's story/status surface. */
+  kind?: "insta-story" | "wa-status";
 };
 
 const APP_SHARES: AppShare[] = [
@@ -98,10 +102,24 @@ const APP_SHARES: AppShare[] = [
       `https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`,
   },
   {
+    id: "wa-status",
+    label: "Status",
+    icon: Aperture,
+    kind: "wa-status",
+    build: () => "https://web.whatsapp.com/",
+  },
+  {
     id: "instagram",
     label: "Instagram",
     icon: Instagram,
     copyFirst: true,
+    build: () => "https://www.instagram.com/",
+  },
+  {
+    id: "insta-story",
+    label: "Story",
+    icon: Camera,
+    kind: "insta-story",
     build: () => "https://www.instagram.com/",
   },
   {
