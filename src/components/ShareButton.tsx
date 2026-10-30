@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   Check,
   Facebook,
+  Instagram,
   Link2,
   Mail,
   MessageCircle,
@@ -172,8 +173,10 @@ export function ShareButton({
       e.preventDefault();
       e.stopPropagation();
       const abs = toAbsoluteUrl(url);
-      // Like Flipkart/Amazon: use the phone's native share sheet when available.
-      if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+      // Like Flipkart/Amazon: on phones/tablets open the OS share sheet
+      // (WhatsApp, Instagram, Messages, ...). Desktop always gets the
+      // in-page app menu, even if navigator.share exists.
+      if (isMobileDevice() && typeof navigator.share === "function") {
         const result = await shareLink({ url: abs, title, text });
         if (result === "cancelled") return;
         if (result === "failed") {
