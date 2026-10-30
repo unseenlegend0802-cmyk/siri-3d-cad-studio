@@ -23,7 +23,20 @@ export function toAbsoluteUrl(path: string): string {
 
 export type ShareResult = "shared" | "copied" | "cancelled" | "failed";
 
-/** Native OS share sheet (mobile), with clipboard fallback. */
+/**
+ * Like Flipkart/Amazon: phones/tablets get the OS share sheet
+ * (WhatsApp, Instagram, Messages, ...). Desktop browsers get the
+ * in-page app menu instead, even when navigator.share exists
+ * (desktop Chrome/Edge expose it but it is not the e-commerce
+ * experience users expect).
+ */
+export function isMobileDevice(): boolean {
+  if (typeof window === "undefined" || typeof navigator === "undefined") return false;
+  const coarsePointer = typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches;
+  return coarsePointer || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+}
+
+/** Native OS share sheet (mobile only), with clipboard fallback. */
 export async function shareLink(opts: {
   url: string;
   title: string;
@@ -31,7 +44,7 @@ export async function shareLink(opts: {
 }): Promise<ShareResult> {
   const url = toAbsoluteUrl(opts.url);
 
-  if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+  if (isMobileDevice() && typeof navigator.share === "function") {
     try {
       await navigator.share({ title: opts.title, text: opts.text, url });
       return "shared";
@@ -66,7 +79,14 @@ export async function shareLink(opts: {
   }
 }
 
-type AppShare = { id: string; label: string; icon: LucideIcon; build: (url: string, title: string, text: string) => string };
+type AppShare = {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  build: (url: string, title: string, text: string) => string;
+  /** Copies the link first, then opens the app so the user can paste (apps with no web share URL, e.g. Instagram). */
+  copyFirst?: boolean;
+};
 
 const APP_SHARES: AppShare[] = [
   {
@@ -75,6 +95,13 @@ const APP_SHARES: AppShare[] = [
     icon: MessageCircle,
     build: (url, _title, text) =>
       `https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`,
+  },
+  {
+    id: "instagram",
+    label: "Instagram",
+    icon: Instagram,
+    copyFirst: true,
+    build: () => "https://www.instagram.com/",
   },
   {
     id: "facebook",
