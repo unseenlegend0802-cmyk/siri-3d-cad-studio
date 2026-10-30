@@ -31,7 +31,7 @@ export async function shareLink(opts: {
 }): Promise<ShareResult> {
   const url = toAbsoluteUrl(opts.url);
 
-  if (typeof navigator !== "undefined" && navigator.share) {
+  if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
     try {
       await navigator.share({ title: opts.title, text: opts.text, url });
       return "shared";
@@ -146,7 +146,7 @@ export function ShareButton({
       e.stopPropagation();
       const abs = toAbsoluteUrl(url);
       // Like Flipkart/Amazon: use the phone's native share sheet when available.
-      if (typeof navigator !== "undefined" && navigator.share) {
+      if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
         const result = await shareLink({ url: abs, title, text });
         if (result === "cancelled") return;
         if (result === "failed") {
